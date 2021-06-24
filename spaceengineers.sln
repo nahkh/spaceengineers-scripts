@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiningDrill", "MiningDrill\MiningDrill.csproj", "{A56690DF-29C6-44A6-BCF4-4F3A1749923A}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BlockFinder", "BlockFinder\BlockFinder.shproj", "{61EBA249-19F3-48B6-A25B-A4CEE90168BA}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Display", "Display\Display.shproj", "{AFD21EC4-21DB-4FA9-828F-196ABE5A35D0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Walker", "Walker\Walker.shproj", "{CDBFEC0C-E71B-450E-A997-E6CE6B3DC957}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalkerTest", "WalkerTest\WalkerTest.csproj", "{2BA0D73B-02F2-4191-B5A8-38981FF61203}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoverBike", "HoverBike\HoverBike.csproj", "{0EFD8263-6953-454B-870F-E1116A10148D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "InventoryTracker", "InventoryTracker\InventoryTracker.shproj", "{E59582F5-D6F2-4D01-BEA2-4D0DF3C30040}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		BlockFinder\BlockFinder.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
+		Display\Display.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
+		BlockFinder\BlockFinder.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
+		Display\Display.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
+		Walker\Walker.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
+		BlockFinder\BlockFinder.projitems*{61eba249-19f3-48b6-a25b-a4cee90168ba}*SharedItemsImports = 13
+		BlockFinder\BlockFinder.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
+		Display\Display.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
+		InventoryTracker\InventoryTracker.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
+		Walker\Walker.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
+		Display\Display.projitems*{afd21ec4-21db-4fa9-828f-196abe5a35d0}*SharedItemsImports = 13
+		Walker\Walker.projitems*{cdbfec0c-e71b-450e-a997-e6ce6b3dc957}*SharedItemsImports = 13
+		InventoryTracker\InventoryTracker.projitems*{e59582f5-d6f2-4d01-bea2-4d0df3c30040}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A56690DF-29C6-44A6-BCF4-4F3A1749923A}.Debug|x64.ActiveCfg = Debug|x64
+		{A56690DF-29C6-44A6-BCF4-4F3A1749923A}.Debug|x64.Build.0 = Debug|x64
+		{2BA0D73B-02F2-4191-B5A8-38981FF61203}.Debug|x64.ActiveCfg = Debug|x64
+		{2BA0D73B-02F2-4191-B5A8-38981FF61203}.Debug|x64.Build.0 = Debug|x64
+		{0EFD8263-6953-454B-870F-E1116A10148D}.Debug|x64.ActiveCfg = Debug|x64
+		{0EFD8263-6953-454B-870F-E1116A10148D}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F4D805DF-3367-4152-86BA-55EBF1814179}
+	EndGlobalSection
+EndGlobal
