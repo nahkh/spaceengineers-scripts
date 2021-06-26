@@ -17,14 +17,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoverBike", "HoverBike\Hove
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "InventoryTracker", "InventoryTracker\InventoryTracker.shproj", "{E59582F5-D6F2-4D01-BEA2-4D0DF3C30040}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PidController", "PidController\PidController.shproj", "{853F2341-53A5-4D32-82F9-455AA5C66896}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		BlockFinder\BlockFinder.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
 		Display\Display.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
+		PidController\PidController.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
 		BlockFinder\BlockFinder.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
 		Display\Display.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
 		Walker\Walker.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
 		BlockFinder\BlockFinder.projitems*{61eba249-19f3-48b6-a25b-a4cee90168ba}*SharedItemsImports = 13
+		PidController\PidController.projitems*{853f2341-53a5-4d32-82f9-455aa5c66896}*SharedItemsImports = 13
 		BlockFinder\BlockFinder.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
 		Display\Display.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
 		InventoryTracker\InventoryTracker.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
