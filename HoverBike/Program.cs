@@ -38,7 +38,8 @@ namespace IngameScript
         {
             cockpit = new BlockFinder<IMyCockpit>(this).get();
             balancer = new Balancer(new BlockFinder<IMyGyro>(this).get(), cockpit);
-            hoverer = new Hoverer(cockpit, new BlockFinder<IMyThrust>(this).withCustomData("UP").getAll(), new BlockFinder<IMyCameraBlock>(this).get());
+            List<IMyCameraBlock> cameras = new BlockFinder<IMyCameraBlock>(this).getAll();
+            hoverer = new Hoverer(cockpit, new BlockFinder<IMyThrust>(this).withCustomData("UP").getAll(), cameras[0], cameras[1]);
             new ScriptDisplay(Me, Runtime);
             new StatusDisplay(cockpit.GetSurface(0), 35, 15)
                 .withCenteredLabel("System status")

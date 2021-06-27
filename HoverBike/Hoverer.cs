@@ -26,13 +26,14 @@ namespace IngameScript
         {
             private readonly IMyCockpit cockpit;
             private readonly List<IMyThrust> thrusters;
-            private readonly IMyCameraBlock camera;
+            private readonly IMyCameraBlock groundCamera;
+            private readonly IMyCameraBlock directCamera;
             private static readonly double desiredAltitude = 10;
             private double currentDesiredAltitude = 10;
             private readonly PidController pid;
             private DateTime landingStarted;
             private static readonly double landingSeconds = 10;
-            private static readonly double maxVelocity = 100;
+            private static readonly double maxVelocity = 250;
             private static readonly double scanRange = 100;
             private double lastProjectedAltitude;
 
@@ -49,10 +50,11 @@ namespace IngameScript
 
             State state;
 
-            public Hoverer(IMyCockpit cockpit, List<IMyThrust> thrusters, IMyCameraBlock camera) {
+            public Hoverer(IMyCockpit cockpit, List<IMyThrust> thrusters, IMyCameraBlock groundCamera, IMyCameraBlock directCamera) {
                 this.cockpit = cockpit;
                 this.thrusters = thrusters;
-                this.camera = camera;
+                this.groundCamera = groundCamera;
+                this.directCamera = directCamera;
                 state = State.INACTIVE;
                 pid = new PidController(5, 0.1, 0.05, 10);
             }
@@ -80,6 +82,8 @@ namespace IngameScript
                     if (IsUpsideDown())
                     {
                         SetThrust(0);
+                    } else if(FacingObstacle()) {
+                        SetThrust(1);
                     } else {
                         double currentAltitude = CurrentAltitude();
                         if (currentAltitude < currentDesiredAltitude / 2 || (GetVerticalVelocity() < -10 && currentAltitude < 100))
@@ -104,7 +108,8 @@ namespace IngameScript
                     return;
                 }
                 currentDesiredAltitude = desiredAltitude;
-                camera.EnableRaycast = true;
+                groundCamera.EnableRaycast = true;
+                directCamera.EnableRaycast = true;
                 pid.Reset();
                 state = State.ACTIVE;
             }
@@ -115,7 +120,8 @@ namespace IngameScript
                 {
                     state = State.DEACTIVATING;
                     landingStarted = DateTime.Now;
-                    camera.EnableRaycast = false;
+                    groundCamera.EnableRaycast = false;
+                    directCamera.EnableRaycast = false;
                 }
             }
 
@@ -180,10 +186,13 @@ namespace IngameScript
             {
                 Vector3D gravity = cockpit.GetNaturalGravity();
                 gravity.Normalize();
-                float maxAngle = camera.RaycastConeLimit;
-                
+                float maxAngle = groundCamera.RaycastConeLimit;
+                Vector3D linearVelocity = cockpit.GetShipVelocities().LinearVelocity;
+                linearVelocity.Normalize();
+                Vector3D scanTarget = cockpit.WorldMatrix.Translation + (gravity + linearVelocity*scanRange);
+
                 lastScanHit = false;
-                if (camera.CanScan(scanRange))
+                if (groundCamera.CanScan(scanTarget))
                 {
 
                     float angle = -maxAngle * (1 - (float)(GetForwardVelocity() / maxVelocity));
@@ -191,7 +200,7 @@ namespace IngameScript
                     {
                         angle = 0.1f;
                     }
-                    MyDetectedEntityInfo info = camera.Raycast(scanRange, angle);
+                    MyDetectedEntityInfo info = groundCamera.Raycast(scanTarget);
                     if (!info.IsEmpty() && (info.Type == MyDetectedEntityType.LargeGrid || info.Type == MyDetectedEntityType.Planet))
                     {
                         lastScan = DateTime.Now;
@@ -210,6 +219,23 @@ namespace IngameScript
                 {
                     return 999;
                 }
+            }
+
+
+            private bool FacingObstacle()
+            {
+                double velocity = GetForwardVelocity();
+                if (velocity < 0)
+                {
+                    return false;
+                }
+
+                if (!directCamera.CanScan(velocity * 3))
+                {
+                    return false;
+                }
+                MyDetectedEntityInfo info = groundCamera.Raycast(velocity * 3);
+                return !info.IsEmpty() && (info.Type == MyDetectedEntityType.LargeGrid || info.Type == MyDetectedEntityType.Planet);
             }
 
             private void SetThrust(float thrust)
