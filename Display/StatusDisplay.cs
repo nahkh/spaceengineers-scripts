@@ -26,6 +26,7 @@ namespace IngameScript
         {
             private readonly List<string> output;
             private readonly List<Row> rows;
+            private readonly List<Row> visibleRows;
             private readonly IMyTextSurface textSurface;
             private readonly int width;
             private readonly int height;
@@ -34,6 +35,7 @@ namespace IngameScript
             public StatusDisplay(IMyTextSurface textSurface, int width, int height)
             {
                 rows = new List<Row>();
+                visibleRows = new List<Row>();
                 this.textSurface = textSurface;
                 this.width = width;
                 this.height = height;
@@ -52,9 +54,21 @@ namespace IngameScript
                 return this;
             }
 
+            public StatusDisplay withOptionalRow(string label, Func<string> contentSource, Func<bool> predicate)
+            {
+                rows.Add(new OptionalRow(new TextRow(width, label, contentSource), predicate));
+                return this;
+            }
+
             public StatusDisplay withHorizontalLine()
             {
                 rows.Add(new HorizontalLineRow(width));
+                return this;
+            }
+
+            public StatusDisplay withLog(LogBuffer logBuffer)
+            {
+                rows.AddList(logBuffer.GetRows());
                 return this;
             }
 
@@ -66,12 +80,20 @@ namespace IngameScript
 
             public List<string> render()
             {
+                visibleRows.Clear();
+                foreach (Row row in rows)
+                {
+                    if (row.IsVisible())
+                    {
+                        visibleRows.Add(row);
+                    }
+                }
                 output.Clear();
                 for (int i = 0; i < height; ++i)
                 {
-                    if (i < rows.Count)
+                    if (i < visibleRows.Count)
                     {
-                        output.Add(rows[i].render());
+                        output.Add(visibleRows[i].render());
                     } else
                     {
                         if (i == height - 1 && showTime)
@@ -93,6 +115,7 @@ namespace IngameScript
 
             public interface Row
             {
+                bool IsVisible();
                 string render();
             }
 
@@ -117,6 +140,11 @@ namespace IngameScript
                     }
                     return label + new string(' ', remainingLength) + content;
                 }
+
+                public bool IsVisible()
+                {
+                    return true;
+                }
             }
 
             public class HorizontalLineRow : Row
@@ -130,6 +158,10 @@ namespace IngameScript
                 public string render()
                 {
                     return content;
+                }
+                public bool IsVisible()
+                {
+                    return true;
                 }
             }
 
@@ -145,6 +177,97 @@ namespace IngameScript
                 public string render()
                 {
                     return content;
+                }
+                public bool IsVisible()
+                {
+                    return true;
+                }
+            }
+
+            public class OptionalRow : Row
+            {
+                private readonly Row delegateRow;
+                private readonly Func<bool> predicate;
+
+                public OptionalRow(Row row, Func<bool> predicate) {
+                    delegateRow = row;
+                    this.predicate = predicate;
+                }
+
+                public string render()
+                {
+                    return delegateRow.render();
+                }
+
+                public bool IsVisible()
+                {
+                    return predicate();
+                }
+            }
+
+            public class FreeRow : Row
+            {
+                private readonly Func<string> provider;
+
+                public FreeRow(Func<string> provider)
+                {
+                    this.provider = provider;
+                }
+
+                public string render()
+                {
+                    return provider.Invoke();
+                }
+
+                public bool IsVisible()
+                {
+                    return true;
+                }
+            }
+
+            public class LogBuffer
+            {
+                private readonly int rowCount;
+                private readonly List<string> rows;
+
+                public LogBuffer(int rowCount)
+                {
+                    this.rowCount = rowCount;
+                    rows = new List<string>();
+                }
+
+                public void Write(string logMessage)
+                {
+                    rows.Add(logMessage);
+                    while(rows.Count > rowCount)
+                    {
+                        rows.RemoveAt(0);
+                    }
+                }
+                
+                private Func<string> ForRow(int row)
+                {
+                    return () =>
+                    {
+                        if (row >= 0 && row < rows.Count)
+                        {
+                            return rows[row];
+                        }
+                        else
+                        {
+                            return "";
+                        }
+                    };
+                }
+
+                public List<Row> GetRows()
+                {
+                    List<Row> rows = new List<Row>();
+                    for (int i = 0; i < rowCount; ++i)
+                    {
+                        rows.Add(new FreeRow(ForRow(i)));
+                    }
+                    return rows;
                 }
             }
         }

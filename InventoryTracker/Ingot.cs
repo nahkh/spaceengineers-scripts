@@ -22,10 +22,9 @@ namespace IngameScript
 {
     partial class Program
     {
-        
-        public static class Ore
+        public class Ingot
         {
-            public enum OreType
+            public enum IngotType
             {
                 Stone,
                 Iron,
@@ -37,54 +36,51 @@ namespace IngameScript
                 Magnesium,
                 Uranium,
                 Platinum,
-                Ice,
             }
 
-            public static MyItemType ItemType(OreType type)
+            public static MyItemType ItemType(IngotType type)
             {
-                return MyItemType.MakeOre(type.ToString());
+                return MyItemType.MakeIngot(type.ToString());
             }
 
-            public static string ShortName(OreType type)
+            public static string ShortName(IngotType type)
             {
-                switch(type)
+                switch (type)
                 {
-                    case OreType.Stone:
+                    case IngotType.Stone:
                         return "St";
-                    case OreType.Iron:
+                    case IngotType.Iron:
                         return "Fe";
-                    case OreType.Silicon:
+                    case IngotType.Silicon:
                         return "Si";
-                    case OreType.Nickel:
+                    case IngotType.Nickel:
                         return "Ni";
-                    case OreType.Cobalt:
+                    case IngotType.Cobalt:
                         return "Co";
-                    case OreType.Silver:
+                    case IngotType.Silver:
                         return "Ag";
-                    case OreType.Gold:
+                    case IngotType.Gold:
                         return "Au";
-                    case OreType.Magnesium:
+                    case IngotType.Magnesium:
                         return "Mg";
-                    case OreType.Uranium:
+                    case IngotType.Uranium:
                         return "U ";
-                    case OreType.Platinum:
+                    case IngotType.Platinum:
                         return "Pl";
-                    case OreType.Ice:
-                        return "Ic";
                     default:
                         return "XX";
                 }
             }
 
-            public static IEnumerable<OreType> Types()
+            public static IEnumerable<IngotType> Types()
             {
-                return Enum.GetValues(typeof(OreType)).Cast<OreType>();
+                return Enum.GetValues(typeof(IngotType)).Cast<IngotType>();
             }
 
             public static List<MyItemType> ItemTypeList()
             {
                 List<MyItemType> types = new List<MyItemType>();
-                foreach (OreType type in Types())
+                foreach(IngotType type in Types())
                 {
                     types.Add(ItemType(type));
                 }

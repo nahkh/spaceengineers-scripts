@@ -41,6 +41,7 @@ namespace IngameScript
                     return _ini.Get("constructionSettings", "forwardLegTag").ToString("WALKER-A");
                 }
             }
+
             public string RearLegTag
             {
                 get
@@ -93,6 +94,14 @@ namespace IngameScript
                 get
                 {
                     return _ini.Get("constructionSettings", "oreDisplayTag").ToString("DISPLAY-ORE");
+                }
+            }
+
+            public string PartDisplaytag
+            {
+                get
+                {
+                    return _ini.Get("constructionSettings", "partsDisplayTag").ToString("DISPLAY-PARTS");
                 }
             }
 

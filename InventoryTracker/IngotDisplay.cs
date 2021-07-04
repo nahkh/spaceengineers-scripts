@@ -22,16 +22,16 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class OreDisplay : InventoryDisplay<Ore.OreType>
+        public class IngotDisplay : InventoryDisplay<Ingot.IngotType>
         {
             
-            public OreDisplay(IMyTextSurface surface, Func<Dictionary<Ore.OreType, float>> oreCountSource) : base("Ore in storage", surface, oreCountSource)
+            public IngotDisplay(IMyTextSurface surface, Func<Dictionary<Ingot.IngotType, float>> ingotCountSource) : base("Ingots in storage", surface, ingotCountSource)
             {
             }
 
-            override protected IEnumerable<Ore.OreType> Types()
+            override protected IEnumerable<Ingot.IngotType> Types()
             {
-                return Ore.Types();
+                return Ingot.Types();
             }
 
         }

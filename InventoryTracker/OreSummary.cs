@@ -22,34 +22,25 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class OreSummary
+        public class OreSummary : InventorySummary<Ore.OreType>
         {
-            private readonly List<IMyCargoContainer> cargoContainers;
 
-            public OreSummary(List<IMyCargoContainer> cargoContainers)
+            public OreSummary(List<IMyTerminalBlock> cargoContainers) : base(cargoContainers)
             {
-                this.cargoContainers = cargoContainers;
             }
 
-            public Dictionary<Ore.OreType, float> OreAmounts()
+            protected override MyItemType ItemType(Ore.OreType t)
             {
-                Dictionary<Ore.OreType, float> amounts = new Dictionary<Ore.OreType, float>();
-                foreach(IMyCargoContainer container in cargoContainers)
-                {
-                    CollectOres(amounts, container);
-                }
-                return amounts;
+                return Ore.ItemType(t);
+            }
+            protected override IEnumerable<Ore.OreType> Types()
+            {
+                return Ore.Types();
             }
 
-            private void CollectOres(Dictionary<Ore.OreType, float> collection, IMyCargoContainer container)
+            protected override float ItemValue(MyFixedPoint point)
             {
-                IMyInventory inventory = container.GetInventory(0);
-                foreach (Ore.OreType type in Ore.Types())
-                {
-                    MyFixedPoint point = inventory.GetItemAmount(Ore.ItemType(type));
-                    float itemInKg = (float)point.RawValue / 1000000000f;
-                    collection[type] = collection.GetValueOrDefault(type, 0) + itemInKg;
-                }
+                return point.RawValue / 1000000000f;
             }
         }
     }

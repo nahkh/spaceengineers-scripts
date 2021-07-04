@@ -22,18 +22,26 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class OreDisplay : InventoryDisplay<Ore.OreType>
+        public class IngotSummary : InventorySummary<Ingot.IngotType>
         {
-            
-            public OreDisplay(IMyTextSurface surface, Func<Dictionary<Ore.OreType, float>> oreCountSource) : base("Ore in storage", surface, oreCountSource)
+
+            public IngotSummary(List<IMyTerminalBlock> cargoContainers) : base(cargoContainers)
             {
             }
 
-            override protected IEnumerable<Ore.OreType> Types()
+            protected override MyItemType ItemType(Ingot.IngotType t)
             {
-                return Ore.Types();
+                return Ingot.ItemType(t);
+            }
+            protected override IEnumerable<Ingot.IngotType> Types()
+            {
+                return Ingot.Types();
             }
 
+            protected override float ItemValue(MyFixedPoint point)
+            {
+                return point.RawValue / 1000000000f;
+            }
         }
     }
 }

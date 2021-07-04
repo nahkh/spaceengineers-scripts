@@ -29,6 +29,7 @@ namespace IngameScript
         IMyMotorAdvancedStator drillMotor;
         SavedState savedState;
         Settings settings;
+        SpeedTracker speedTracker;
 
         enum State
         {
@@ -55,11 +56,13 @@ namespace IngameScript
             drillMotor = getDrillMotor();
             savedState.Parse(drillMotor.WorldMatrix.Translation);
             drillController = buildDrillController(drillMotor);
+            speedTracker = new SpeedTracker(() => drillMotor.WorldMatrix.Translation);
             state = State.STANDBY;
             new ScriptDisplay(Me, Runtime);
 
             buildStatusDisplay();
             buildOreDisplay();
+            buildPartsDisplay();
         }
 
         public Walker buildWalker()
@@ -114,6 +117,7 @@ namespace IngameScript
                 .withRow("State", () => state.ToString())
                 .withRow("Depth", () => CurrentDepth().ToString("n2") + " m")
                 .withRow("Target depth", () => settings.DesiredDepth.ToString("n2") + " m")
+                .withRow("Average velocity", VelocityInfo)
                 .withHorizontalLine()
                 .withRow("Drill", () => drillController.Info())
                 .withRow("Walker", () => walker.GetState().ToString())
@@ -125,9 +129,26 @@ namespace IngameScript
 
         public Display buildOreDisplay()
         {
-            OreSummary oreSummary = new OreSummary(new BlockFinder<IMyCargoContainer>(this).inSameConstructAs(Me).getAll());
+            OreSummary oreSummary = new OreSummary(new BlockFinder<IMyTerminalBlock>(this).withCustomPredicate(block => block is IMyCargoContainer).inSameConstructAs(Me).getAll());
             IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).inSameConstructAs(Me).withCustomData(settings.OreDisplaytag).get();
-            return new OreDisplay(textPanel, oreSummary.OreAmounts)
+            return new OreDisplay(textPanel, oreSummary.Amounts)
+                .Build();
+        }
+
+        public Display buildPartsDisplay()
+        {
+            PartSummary partSummary = new PartSummary(new BlockFinder<IMyTerminalBlock>(this).withCustomPredicate(block => block is IMyCargoContainer).inSameConstructAs(Me).getAll());
+            IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).inSameConstructAs(Me).withCustomData(settings.PartDisplaytag).get();
+            return new PartDisplay(textPanel, partSummary.Amounts)
+                .WithSubassemblyCounter(new PartDisplay.SubassemblyCounter.Builder("Sections")
+                    .WithPart(Component.ComponentType.Motor, 28)
+                    .WithPart(Component.ComponentType.SmallTube, 56)
+                    .WithPart(Component.ComponentType.Construction, 125)
+                    .WithPart(Component.ComponentType.InteriorPlate, 48)
+                    .WithPart(Component.ComponentType.SteelPlate, 162)
+                    .WithPart(Component.ComponentType.Computer, 22)
+                    .WithPart(Component.ComponentType.LargeTube, 6)
+                    .Build())
                 .Build();
         }
 
@@ -178,6 +199,9 @@ namespace IngameScript
                 case "RESET":
                     savedState.Reset();
                     break;
+                case "FORCESTEP":
+                    savedState.StepCount = savedState.StepCount + 1;
+                    break;
             }
         }
 
@@ -185,6 +209,7 @@ namespace IngameScript
         {
             if (state == State.STANDBY)
             {
+                speedTracker.Reset();
                 state = State.START_DRILLING;
                 drillController.Start();
                 constructionController.StartBuilding();
@@ -197,7 +222,7 @@ namespace IngameScript
 
         public void StopDrilling()
         {
-            if (state == State.DRILLING)
+            if (state == State.DRILLING || state == State.RETRACTING)
             {
                 state = State.STOPPING;
             }
@@ -207,6 +232,7 @@ namespace IngameScript
         {
             if (state == State.STANDBY)
             {
+                speedTracker.Reset();
                 state = State.START_RETRACTING;
                 constructionController.StartRemoving();
 
@@ -280,6 +306,18 @@ namespace IngameScript
             } else
             {
                 return (savedState.StartingPosition - drillMotor.WorldMatrix.Translation).Length();
+            }
+        }
+
+        private string VelocityInfo()
+        {
+            if (state == State.DRILLING || state == State.RETRACTING)
+            {
+                return speedTracker.AverageSpeed.ToString("n2") + " m/s";
+            } 
+            else
+            {
+                return "";
             }
         }
     }

@@ -50,6 +50,12 @@ namespace IngameScript
                 return matchingPredicate(block => block.CustomData.Contains(data));
             }
 
+            public BlockFinder<T> withoutCustomData(string data)
+            {
+                description.Add("'" + data + "' NOT in custom data");
+                return matchingPredicate(block => !block.CustomData.Contains(data));
+            }
+
             public BlockFinder<T> withCustomPredicate(Func<T, bool> predicate)
             {
                 description.Add("a custom predicate");

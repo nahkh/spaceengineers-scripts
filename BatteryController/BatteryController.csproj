@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A56690DF-29C6-44A6-BCF4-4F3A1749923A}</ProjectGuid>
+    <ProjectGuid>{BFC89F62-77EC-4703-B3A4-C8EDB6B8A9A7}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>IngameScript</RootNamespace>
-    <AssemblyName>MiningDrill</AssemblyName>
+    <AssemblyName>BatteryController</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -38,9 +38,7 @@
   <Import Project="MDK/MDK.options.props" />
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
-    <Compile Include="BracingLeg.cs" />
-    <Compile Include="ConstructionController.cs" />
-    <Compile Include="DrillController.cs" />
+    <Compile Include="BatteryController.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />
     <AdditionalFiles Include="MDK\MDK.options.props">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -52,14 +50,9 @@
     <AdditionalFiles Include="Instructions.readme" />
     <AdditionalFiles Include="thumb.png" />
     <AdditionalFiles Include="MDK\whitelist.cache" />
-    <Compile Include="SavedState.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="SpeedTracker.cs" />
   </ItemGroup>
   <Import Project="..\BlockFinder\BlockFinder.projitems" Label="Shared" />
   <Import Project="..\Display\Display.projitems" Label="Shared" />
-  <Import Project="..\Walker\Walker.projitems" Label="Shared" />
-  <Import Project="..\InventoryTracker\InventoryTracker.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <Copy SourceFiles="MDK\MDK.options.props" DestinationFolder="$(TargetDir)\MDK" />
