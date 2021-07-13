@@ -22,34 +22,44 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class CachingProvider<T>
+        public class CachingProvider
         {
-            private readonly Func<T> provider;
-            private readonly TimeSpan ttl;
-            private DateTime lastRefresh;
-            private T cachedValue;
-
-            public CachingProvider(Func<T> provider, TimeSpan ttl)
+            public class Cache<T>
             {
-                this.provider = provider;
-                this.ttl = ttl;
-                lastRefresh = DateTime.MinValue;
-            }
+                private readonly Func<T> provider;
+                private readonly TimeSpan ttl;
+                private DateTime lastRefresh;
+                private T cachedValue;
 
-            public T Get()
-            {
-                if (lastRefresh + ttl < DateTime.Now)
+                public Cache(Func<T> provider, TimeSpan ttl)
                 {
-                    cachedValue = provider.Invoke();
-                    lastRefresh = DateTime.Now;
+                    this.provider = provider;
+                    this.ttl = ttl;
+                    lastRefresh = DateTime.MinValue;
                 }
-                return cachedValue;
+
+                public T Get()
+                {
+                    if (lastRefresh + ttl < DateTime.Now)
+                    {
+                        cachedValue = provider.Invoke();
+                        lastRefresh = DateTime.Now;
+                    }
+                    return cachedValue;
+                }
+            }
+          
+
+            public static Func<T> Of<T>(Func<T> provider) {
+                return Of(provider, TimeSpan.FromMinutes(1));
             }
 
-            public static Func<T> Of(Func<T> provider) {
-                return new CachingProvider<T>(provider, TimeSpan.FromMinutes(1)).Get;
+            public static Func<T> Of<T>(Func<T> provider, TimeSpan ttl)
+            {
+                return new Cache<T>(provider, ttl).Get;
             }
-            public static Func<T> Of(T rawValue)
+
+            public static Func<T> Of<T>(T rawValue)
             {
                 return () => rawValue;
             }

@@ -72,9 +72,9 @@ namespace IngameScript
                             .InSameConstructAs(Me)
                             .WithCustomData("Projector-Need-LCD")
                             .Get(),
-                        CachingProvider<Dictionary<Component.ComponentType, int>>.Of(neededComponents),
-                        CachingProvider<Dictionary<Component.ComponentType, int>>.Of(componentSummary.IntAmounts),
-                        CachingProvider<Dictionary<Component.ComponentType, int>>.Of(productionSummary.ProductionQueueSummary))
+                        CachingProvider.Of(neededComponents),
+                        CachingProvider.Of(componentSummary.IntAmounts),
+                        CachingProvider.Of(productionSummary.ProductionQueueSummary, TimeSpan.FromSeconds(10)))
                     .Build();
         }
 
