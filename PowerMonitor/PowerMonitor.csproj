@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7137E84B-8364-4E11-ABA7-E6F91A67AD7E}</ProjectGuid>
+    <ProjectGuid>{A2CB7C62-C71D-40D6-9B5F-7E217B23A91A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>IngameScript</RootNamespace>
     <AssemblyName>PowerMonitor</AssemblyName>
@@ -38,6 +38,8 @@
   <Import Project="MDK/MDK.options.props" />
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
+    <Compile Include="PowerDisplay.cs" />
+    <Compile Include="BatteryWatcher.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />
     <AdditionalFiles Include="MDK\MDK.options.props">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
