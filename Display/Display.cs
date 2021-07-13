@@ -24,32 +24,32 @@ namespace IngameScript
     {
         public class Display
         {
-            static List<Display> displays = new List<Display>();
+            private static List<Display> displays = new List<Display>();
             private readonly IMyTextSurface textSurface;
             private readonly Func<List<string>> contentSource;
 
-            public Display(IMyTextSurface textSurface, Func<List<string>> contentSource)
+            public Display(IMyTextSurface textSurface, Func<List<string>> contentSource, float fontSize=0.7f)
             {
                 this.textSurface = textSurface;
                 this.contentSource = contentSource;
                 textSurface.ContentType = ContentType.TEXT_AND_IMAGE;
                 textSurface.FontColor = Color.Green;
-                textSurface.FontSize = 0.7f;
+                textSurface.FontSize = fontSize;
                 textSurface.Font = "Monospace";
                 displays.Add(this);
             }
 
-            public static void render()
+            public static void Render()
             {
-                displays.ForEach(renderSingle);
+                displays.ForEach(RenderSingle);
             }
 
-            private static void renderSingle(Display display)
+            private static void RenderSingle(Display display)
             {
-                display.renderDisplay();
+                display.RenderDisplay();
             }
 
-            public void renderDisplay()
+            public void RenderDisplay()
             {
                 this.textSurface.WriteText(String.Join("\n", this.contentSource.Invoke()));
             }

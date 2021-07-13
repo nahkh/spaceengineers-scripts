@@ -54,17 +54,18 @@ namespace IngameScript
 
             public Display Build()
             {
-                StatusDisplay statusDisplay = new StatusDisplay(surface, 36, 30)
-                    .withCenteredLabel(name)
-                    .withHorizontalLine();
+                StatusDisplay statusDisplay = new StatusDisplay(surface, 36, 26)
+                    .WithCenteredLabel(name)
+                    .WithHorizontalLine();
                 foreach (T type in Types())
                 {
-                    statusDisplay.withRow(type.ToString(), GetForType(type));
+                    statusDisplay.WithRow(type.ToString(), GetForType(type));
                 }
                 return statusDisplay
-                    .withHorizontalLine()
-                    .withRow("Total", GetTotal)
-                    .build();
+                    .WithHorizontalLine()
+                    .WithRow("Total", GetTotal)
+                    .WithTime()
+                    .Build();
             }
 
             private Func<string> GetForType(T type)

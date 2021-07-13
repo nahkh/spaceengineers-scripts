@@ -30,8 +30,8 @@ namespace IngameScript
         {
             settings = new Settings(Me);
             display = new ScriptDisplay(Me, Runtime);
-            connector = new BlockFinder<IMyShipConnector>(this).withCustomData(settings.ConnectorTag).get();
-            Display.render();
+            connector = new BlockFinder<IMyShipConnector>(this).WithCustomData(settings.ConnectorTag).Get();
+            Display.Render();
         }
 
         public void Save()
@@ -48,7 +48,7 @@ namespace IngameScript
                 DockingRequest request = BuildRequest();
                 IGC.SendUnicastMessage(settings.DockId, DockingRequest.tag, request.ToString());
             }
-            Display.render();
+            Display.Render();
         }
 
         private DockingRequest BuildRequest()

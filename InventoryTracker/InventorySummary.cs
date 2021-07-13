@@ -31,16 +31,44 @@ namespace IngameScript
                 this.entities = entities;
             }
 
-            public Dictionary<T, float> Amounts()
+            public Dictionary<T, N> Amounts<N>(Func<MyFixedPoint, N> value, Func<N, N, N> combiner, Func<N> defaultValue)
+            {
+                Dictionary<T, N> amounts = new Dictionary<T, N>();
+                foreach (IMyEntity entity in entities)
+                {
+                    for (int i = 0; i < entity.InventoryCount; ++i)
+                    {
+                        Collect(amounts, value, combiner, defaultValue, entity.GetInventory(i));
+                    }
+
+                }
+                return amounts;
+            }
+
+            public Dictionary<T, float> FloatAmounts()
             {
                 Dictionary<T, float> amounts = new Dictionary<T, float>();
                 foreach(IMyEntity entity in entities)
                 {
                     for(int i = 0; i < entity.InventoryCount; ++i)
                     {
-                        CollectOres(amounts, entity.GetInventory(i));
+                        Collect(amounts, ItemValue, (a, b) => a + b, () => 0, entity.GetInventory(i));
                     }
                     
+                }
+                return amounts;
+            }
+
+            public Dictionary<T, int> IntAmounts()
+            {
+                Dictionary<T, int> amounts = new Dictionary<T, int>();
+                foreach (IMyEntity entity in entities)
+                {
+                    for (int i = 0; i < entity.InventoryCount; ++i)
+                    {
+                        Collect(amounts, point => point.ToIntSafe(), (a, b) => a + b, () => 0, entity.GetInventory(i));
+                    }
+
                 }
                 return amounts;
             }
@@ -49,19 +77,19 @@ namespace IngameScript
             protected abstract IEnumerable<T> Types();
 
 
-            private void CollectOres(Dictionary<T, float> collection, IMyInventory inventory)
+            private void Collect<N>(Dictionary<T, N> collection, Func<MyFixedPoint, N> value, Func<N, N, N> combiner, Func<N> defaultValue, IMyInventory inventory)
             {
                 foreach (T type in Types())
                 {
                     MyFixedPoint point = inventory.GetItemAmount(ItemType(type));
-                    float itemCount = ItemValue(point);
-                    collection[type] = collection.GetValueOrDefault(type, 0) + itemCount;
+                    N itemValue = value.Invoke(point);
+                    collection[type] = combiner.Invoke(collection.GetValueOrDefault(type, defaultValue.Invoke()), itemValue);
                 }
             }
 
             protected virtual float ItemValue(MyFixedPoint point)
             {
-                return point.RawValue / 1000000f;
+                return ((float)point);
             }
         }
     }

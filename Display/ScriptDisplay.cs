@@ -25,19 +25,27 @@ namespace IngameScript
         public class ScriptDisplay
         {
             private readonly StatusDisplay.LogBuffer buffer;
-            public ScriptDisplay(IMyProgrammableBlock programmableBlock, IMyGridProgramRuntimeInfo runtimeInfo)
+            public ScriptDisplay(IMyProgrammableBlock programmableBlock, IMyGridProgramRuntimeInfo runtimeInfo, string name=null, string version=null)
             {
+                if (name == null)
+                {
+                    name = programmableBlock.CustomName;
+                }
+                if (version != null)
+                {
+                    name += " " + version;
+                }
                 buffer = new StatusDisplay.LogBuffer(8);
                 new StatusDisplay(programmableBlock.GetSurface(0), 36, 15)
-                    .withRow("Running script", () => programmableBlock.CustomName)
-                    .withHorizontalLine()
-                    .withRow("Update frequency", () => runtimeInfo.UpdateFrequency.ToString())
-                    .withRow("Call chain depth", () => runtimeInfo.CurrentCallChainDepth.ToString())
-                    .withRow("Instruction count", () => runtimeInfo.CurrentInstructionCount.ToString())
-                    .withHorizontalLine()
-                    .withLog(buffer)
-                    .withTime()
-                    .build();
+                    .WithRow("Running script", () => name)
+                    .WithHorizontalLine()
+                    .WithRow("Update frequency", () => runtimeInfo.UpdateFrequency.ToString())
+                    .WithRow("Call chain depth", () => runtimeInfo.CurrentCallChainDepth.ToString())
+                    .WithRow("Instruction count", () => runtimeInfo.CurrentInstructionCount.ToString())
+                    .WithHorizontalLine()
+                    .WithLog(buffer)
+                    .WithTime()
+                    .Build();
             }
 
             public void Write(string logMessage)

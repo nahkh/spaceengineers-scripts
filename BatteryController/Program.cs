@@ -28,24 +28,24 @@ namespace IngameScript
         public Program()
         {
             List<IMyBatteryBlock> batteries = new BlockFinder<IMyBatteryBlock>(this)
-                .inSameConstructAs(Me)
-                .getAll();
+                .InSameConstructAs(Me)
+                .GetAll();
 
             float maxCharge = batteries.ConvertAll(battery => battery.MaxStoredPower).Max();
             int maxIndex = batteries.FindIndex(battery => battery.MaxStoredPower == maxCharge);
             IMyBatteryBlock mainBattery = batteries[maxIndex];
             IMyBatteryBlock backupBattery = batteries[1 - maxIndex];
             batteryController = new BatteryController(mainBattery, backupBattery);
-            connector = new BlockFinder<IMyShipConnector>(this).inSameConstructAs(Me).get();
+            connector = new BlockFinder<IMyShipConnector>(this).InSameConstructAs(Me).Get();
             
-            new StatusDisplay(new BlockFinder<IMyCockpit>(this).inSameConstructAs(Me).get().GetSurface(1), 35, 15)
-                .withCenteredLabel("Battery status")
-                .withHorizontalLine()
-                .withRow("Status", batteryController.StateInfo)
-                .withRow("Main", batteryController.MainInfo)
-                .withRow("Backup", batteryController.BackupInfo)
-                .withRow("Charge", batteryController.ChargeInfo)
-                .build();
+            new StatusDisplay(new BlockFinder<IMyCockpit>(this).InSameConstructAs(Me).Get().GetSurface(1), 35, 15)
+                .WithCenteredLabel("Battery status")
+                .WithHorizontalLine()
+                .WithRow("Status", batteryController.StateInfo)
+                .WithRow("Main", batteryController.MainInfo)
+                .WithRow("Backup", batteryController.BackupInfo)
+                .WithRow("Charge", batteryController.ChargeInfo)
+                .Build();
 
             new ScriptDisplay(Me, Runtime);
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
@@ -61,7 +61,7 @@ namespace IngameScript
                batteryController.MainPower();
             }
             batteryController.Update();
-            Display.render();
+            Display.Render();
         }
     }
 }

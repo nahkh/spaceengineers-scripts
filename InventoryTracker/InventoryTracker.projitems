@@ -20,5 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)OreSummary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentSummary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProductionSummary.cs" />
   </ItemGroup>
 </Project>

@@ -31,6 +31,7 @@ namespace IngameScript
             private readonly int width;
             private readonly int height;
             private bool showTime = false;
+            private bool showRowLabel = true;
 
             public StatusDisplay(IMyTextSurface textSurface, int width, int height)
             {
@@ -42,43 +43,43 @@ namespace IngameScript
                 output = new List<string>();
             }
 
-            public StatusDisplay withCenteredLabel(string label)
+            public StatusDisplay WithCenteredLabel(string label)
             {
                 rows.Add(new CenteredLabelRow(width, label));
                 return this;
             }
 
-            public StatusDisplay withRow(string label, Func<string> contentSource)
+            public StatusDisplay WithRow(string label, Func<string> contentSource)
             {
                 rows.Add(new TextRow(width, label, contentSource));
                 return this;
             }
 
-            public StatusDisplay withOptionalRow(string label, Func<string> contentSource, Func<bool> predicate)
+            public StatusDisplay WithOptionalRow(string label, Func<string> contentSource, Func<bool> predicate)
             {
                 rows.Add(new OptionalRow(new TextRow(width, label, contentSource), predicate));
                 return this;
             }
 
-            public StatusDisplay withHorizontalLine()
+            public StatusDisplay WithHorizontalLine()
             {
                 rows.Add(new HorizontalLineRow(width));
                 return this;
             }
 
-            public StatusDisplay withLog(LogBuffer logBuffer)
+            public StatusDisplay WithLog(LogBuffer logBuffer)
             {
                 rows.AddList(logBuffer.GetRows());
                 return this;
             }
 
-            public StatusDisplay withTime()
+            public StatusDisplay WithTime()
             {
                 showTime = true;
                 return this;
             }
 
-            public List<string> render()
+            public List<string> Render()
             {
                 visibleRows.Clear();
                 foreach (Row row in rows)
@@ -93,7 +94,7 @@ namespace IngameScript
                 {
                     if (i < visibleRows.Count)
                     {
-                        output.Add(visibleRows[i].render());
+                        output.Add(visibleRows[i].Render());
                     } else
                     {
                         if (i == height - 1 && showTime)
@@ -108,15 +109,15 @@ namespace IngameScript
                 return output;
             }
 
-            public Display build()
+            public Display Build()
             {
-                return new Display(textSurface, render);
+                return new Display(textSurface, Render);
             }
 
             public interface Row
             {
                 bool IsVisible();
-                string render();
+                string Render();
             }
 
             public class TextRow : Row
@@ -132,7 +133,7 @@ namespace IngameScript
                     this.contentSource = contentSource;
                 }
 
-                public string render() {
+                public string Render() {
                     string content = contentSource.Invoke();
                     int remainingLength = width - content.Length - label.Length;
                     if (remainingLength <= 0) {
@@ -155,7 +156,7 @@ namespace IngameScript
                     this.content = new string('-', width);
                 }
 
-                public string render()
+                public string Render()
                 {
                     return content;
                 }
@@ -174,7 +175,7 @@ namespace IngameScript
                     content = new string(' ', (width - label.Length) / 2) + label;
                 }
 
-                public string render()
+                public string Render()
                 {
                     return content;
                 }
@@ -194,9 +195,9 @@ namespace IngameScript
                     this.predicate = predicate;
                 }
 
-                public string render()
+                public string Render()
                 {
-                    return delegateRow.render();
+                    return delegateRow.Render();
                 }
 
                 public bool IsVisible()
@@ -214,7 +215,7 @@ namespace IngameScript
                     this.provider = provider;
                 }
 
-                public string render()
+                public string Render()
                 {
                     return provider.Invoke();
                 }

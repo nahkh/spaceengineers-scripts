@@ -80,11 +80,21 @@ namespace IngameScript
             public static List<MyItemType> ItemTypeList()
             {
                 List<MyItemType> types = new List<MyItemType>();
-                foreach(IngotType type in Types())
+                foreach (IngotType type in Types())
                 {
                     types.Add(ItemType(type));
                 }
                 return types;
+            }
+
+            public static readonly Dictionary<string, IngotType> NameToType;
+
+            static Ingot() {
+                NameToType = new Dictionary<string, IngotType>();
+                foreach (IngotType type in Types())
+                {
+                    NameToType.Add(type.ToString(), type);
+                }
             }
         }
     }

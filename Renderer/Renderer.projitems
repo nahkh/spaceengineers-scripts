@@ -9,11 +9,6 @@
     <Import_RootNamespace>IngameScript</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ClockAnimation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Display.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LogDisplay.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ScriptDisplay.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StatusDisplay.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TableDisplay.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Renderer.cs" />
   </ItemGroup>
 </Project>

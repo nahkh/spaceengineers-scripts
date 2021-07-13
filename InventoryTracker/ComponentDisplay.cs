@@ -75,42 +75,42 @@ namespace IngameScript
             public Display Build()
             {
                 StatusDisplay statusDisplay = new StatusDisplay(surface, 36, 30)
-                    .withCenteredLabel("Parts in storage")
-                    .withHorizontalLine();
+                    .WithCenteredLabel("Parts in storage")
+                    .WithHorizontalLine();
                 if (alwaysShow)
                 {
                     foreach (Component.ComponentType type in Component.Types())
                     {
-                        statusDisplay.withRow(type.ToString(), GetForPart(type));
+                        statusDisplay.WithRow(type.ToString(), GetForPart(type));
                     }
                 }
                 else
                 {
                     foreach (Component.ComponentType type in Component.Types())
                     {
-                        statusDisplay.withOptionalRow(type.ToString(), GetForPart(type), PartExists(type));
+                        statusDisplay.WithOptionalRow(type.ToString(), GetForPart(type), PartExists(type));
                     }
                 }
                 if (showTotal)
                 {
                     statusDisplay
-                        .withHorizontalLine()
-                        .withRow("Total", GetTotal);
+                        .WithHorizontalLine()
+                        .WithRow("Total", GetTotal);
                 }
 
                 if (subassemblyCounters.Count > 0)
                 {
                     statusDisplay
-                        .withHorizontalLine()
-                        .withCenteredLabel("Enough parts for");
+                        .WithHorizontalLine()
+                        .WithCenteredLabel("Enough parts for");
                     foreach(SubassemblyCounter counter in subassemblyCounters)
                     {
-                        statusDisplay.withRow(counter.Label, () => counter.CountPossibleSubassemblies(GetPartCount()).ToString());
+                        statusDisplay.WithRow(counter.Label, () => counter.CountPossibleSubassemblies(GetPartCount()).ToString());
                     }
                 }
 
                 return statusDisplay
-                    .build();
+                    .Build();
             }
 
             private Func<string> GetForPart(Component.ComponentType type)

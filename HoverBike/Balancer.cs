@@ -176,6 +176,7 @@ namespace IngameScript
             private double CalculateRollDeviation() { 
                 Vector3D gravity = cockpit.GetNaturalGravity();
                 Vector3D forward = cockpit.WorldMatrix.Forward;
+
                 Vector3D projection = Vector3D.ProjectOnPlane(ref gravity, ref forward);
                 projection.Normalize();
                 double sign = Vector3D.Dot(gravity, cockpit.WorldMatrix.Right) > 0 ? 1 : -1;

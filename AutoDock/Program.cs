@@ -32,18 +32,18 @@ namespace IngameScript
             settings = new Settings(Me);
             scriptDisplay = new ScriptDisplay(Me, Runtime);
             dockController = new DockController(
-                new BlockFinder<IMyShipConnector>(this).withCustomData(settings.AutodockTag).get(), 
-                new BlockFinder<IMyPistonBase>(this).withCustomData(settings.PerpendicularTag).getAll(),
-                new BlockFinder<IMyPistonBase>(this).withCustomData(settings.ExtendingTag).getAll(),
-                new BlockFinder<IMyMotorAdvancedStator>(this).withCustomData(settings.AutodockTag).getAll());
+                new BlockFinder<IMyShipConnector>(this).WithCustomData(settings.AutodockTag).Get(), 
+                new BlockFinder<IMyPistonBase>(this).WithCustomData(settings.PerpendicularTag).GetAll(),
+                new BlockFinder<IMyPistonBase>(this).WithCustomData(settings.ExtendingTag).GetAll(),
+                new BlockFinder<IMyMotorAdvancedStator>(this).WithCustomData(settings.AutodockTag).GetAll());
 
-            new StatusDisplay(new BlockFinder<IMyTextPanel>(this).withCustomData("LCD:AUTODOCK").get(), 36, 30)
-                .withCenteredLabel("Autodock")
-                .withHorizontalLine()
-                .withRow("State", dockController.StateInfo)
-                .withRow("Pistons", dockController.PistonCount)
-                .withRow("Address", () => IGC.Me.ToString())
-                .build();
+            new StatusDisplay(new BlockFinder<IMyTextPanel>(this).WithCustomData("LCD:AUTODOCK").Get(), 36, 30)
+                .WithCenteredLabel("Autodock")
+                .WithHorizontalLine()
+                .WithRow("State", dockController.StateInfo)
+                .WithRow("Pistons", dockController.PistonCount)
+                .WithRow("Address", () => IGC.Me.ToString())
+                .Build();
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
             IGC.UnicastListener.SetMessageCallback(callbackArgument);
         }
@@ -60,7 +60,7 @@ namespace IngameScript
                 ProcessMessages();
             }
             dockController.Update();
-            Display.render();
+            Display.Render();
         }
 
         private void ProcessMessages()

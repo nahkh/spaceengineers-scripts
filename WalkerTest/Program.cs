@@ -34,19 +34,19 @@ namespace IngameScript
 
         public Walker buildWalker(string tagA, string tagB, string extenderTag)
         {
-            IMyPistonBase pistonA = new BlockFinder<IMyPistonBase>(this).withCustomData(tagA).get();
-            IMyShipMergeBlock mergeA = new BlockFinder<IMyShipMergeBlock>(this).withCustomData(tagA).get();
-            IMyShipConnector connectorA = new BlockFinder<IMyShipConnector>(this).withCustomData(tagA).get();
-            IMyPistonBase pistonB = new BlockFinder<IMyPistonBase>(this).withCustomData(tagB).get();
-            IMyShipMergeBlock mergeB = new BlockFinder<IMyShipMergeBlock>(this).withCustomData(tagB).get();
-            IMyShipConnector connectorB = new BlockFinder<IMyShipConnector>(this).withCustomData(tagB).get();
-            IMyPistonBase pistonExtender = new BlockFinder<IMyPistonBase>(this).withCustomData(extenderTag).get();
+            IMyPistonBase pistonA = new BlockFinder<IMyPistonBase>(this).WithCustomData(tagA).Get();
+            IMyShipMergeBlock mergeA = new BlockFinder<IMyShipMergeBlock>(this).WithCustomData(tagA).Get();
+            IMyShipConnector connectorA = new BlockFinder<IMyShipConnector>(this).WithCustomData(tagA).Get();
+            IMyPistonBase pistonB = new BlockFinder<IMyPistonBase>(this).WithCustomData(tagB).Get();
+            IMyShipMergeBlock mergeB = new BlockFinder<IMyShipMergeBlock>(this).WithCustomData(tagB).Get();
+            IMyShipConnector connectorB = new BlockFinder<IMyShipConnector>(this).WithCustomData(tagB).Get();
+            IMyPistonBase pistonExtender = new BlockFinder<IMyPistonBase>(this).WithCustomData(extenderTag).Get();
             return new Walker(0.5f, new PistonAssembly(pistonA, connectorA, mergeA), new PistonAssembly(pistonB, connectorB, mergeB), pistonExtender);
         }
 
         public void setupStatusDisplay(Walker walker, string tag)
         {
-            IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).withCustomData(tag).get();
+            IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).WithCustomData(tag).Get();
             new Display(textPanel, walker.StatusInfo);
         }
 
@@ -65,7 +65,7 @@ namespace IngameScript
                 walker.EmergencyShutdown();
             }
             walker.Update();
-            Display.render();
+            Display.Render();
         }
     }
 }

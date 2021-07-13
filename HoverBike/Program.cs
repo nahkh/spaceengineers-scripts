@@ -36,27 +36,27 @@ namespace IngameScript
         State state;
         public Program()
         {
-            cockpit = new BlockFinder<IMyCockpit>(this).get();
-            balancer = new Balancer(new BlockFinder<IMyGyro>(this).get(), cockpit);
-            List<IMyCameraBlock> cameras = new BlockFinder<IMyCameraBlock>(this).getAll();
-            hoverer = new Hoverer(cockpit, new BlockFinder<IMyThrust>(this).withCustomData("UP").getAll(), cameras[0], cameras[1]);
+            cockpit = new BlockFinder<IMyCockpit>(this).Get();
+            balancer = new Balancer(new BlockFinder<IMyGyro>(this).Get(), cockpit);
+            List<IMyCameraBlock> cameras = new BlockFinder<IMyCameraBlock>(this).GetAll();
+            hoverer = new Hoverer(cockpit, new BlockFinder<IMyThrust>(this).WithCustomData("UP").GetAll(), cameras[0], cameras[1]);
             new ScriptDisplay(Me, Runtime);
             new StatusDisplay(cockpit.GetSurface(0), 35, 15)
-                .withCenteredLabel("System status")
-                .withRow("Status", () => state.ToString())
-                .withHorizontalLine()
-                .withRow("Balancer", balancer.Info)
-                .withRow("Pitch", balancer.PitchDeviation)
-                .withRow("Roll", balancer.RollDeviation)
-                .withRow("Yaw", balancer.YawDeviation)
-                .withHorizontalLine()
-                .withRow("Hoverer", hoverer.Info)
-                .withRow("Current altitude", hoverer.AltitudeInfo)
-                .withRow("Target altitude", hoverer.DesiredAltitude)
-                .withRow("Projected altitude", hoverer.ProjectedAltitudeInfo)
-                .withRow("Last raycast", hoverer.LastTargetInfo)
-                .withTime()
-                .build();
+                .WithCenteredLabel("System status")
+                .WithRow("Status", () => state.ToString())
+                .WithHorizontalLine()
+                .WithRow("Balancer", balancer.Info)
+                .WithRow("Pitch", balancer.PitchDeviation)
+                .WithRow("Roll", balancer.RollDeviation)
+                .WithRow("Yaw", balancer.YawDeviation)
+                .WithHorizontalLine()
+                .WithRow("Hoverer", hoverer.Info)
+                .WithRow("Current altitude", hoverer.AltitudeInfo)
+                .WithRow("Target altitude", hoverer.DesiredAltitude)
+                .WithRow("Projected altitude", hoverer.ProjectedAltitudeInfo)
+                .WithRow("Last raycast", hoverer.LastTargetInfo)
+                .WithTime()
+                .Build();
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
             state = State.INACTIVE;
         }
@@ -101,7 +101,7 @@ namespace IngameScript
             }
             balancer.Update();
             hoverer.Update();
-            Display.render();
+            Display.Render();
         }
 
         private void Activate()

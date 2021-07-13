@@ -35,10 +35,10 @@ namespace IngameScript
             settings = new Settings(Me);
             scriptDisplay = new ScriptDisplay(Me, Runtime);
             inventoriesOnStation = new BlockFinder<IMyTerminalBlock>(this)
-                .inSameConstructAs(Me)
-                .withoutCustomData(settings.IgnoreTag)
-                .withCustomPredicate(block => block.HasInventory)
-                .getAll();
+                .InSameConstructAs(Me)
+                .WithoutCustomData(settings.IgnoreTag)
+                .WithCustomPredicate(block => block.HasInventory)
+                .GetAll();
             BuildIngotDisplay();
             BuildComponentDisplay();
             if (settings.MoveItems)
@@ -54,18 +54,18 @@ namespace IngameScript
         private void BuildIngotDisplay()
         {
             IngotSummary ingotSummary = new IngotSummary(new BlockFinder<IMyTerminalBlock>(this)
-                .inSameConstructAs(Me)
-                .withCustomPredicate(item => item.HasInventory)
-                .getAll());
+                .InSameConstructAs(Me)
+                .WithCustomPredicate(item => item.HasInventory)
+                .GetAll());
             new IngotDisplay(new BlockFinder<IMyTextPanel>(this)
-                .withCustomData(settings.IngotDisplayTag).get(), ingotSummary.Amounts)
+                .WithCustomData(settings.IngotDisplayTag).Get(), ingotSummary.FloatAmounts)
                 .Build();
         }
 
         private void BuildComponentDisplay()
         {
-            PartSummary partSummary = new PartSummary(new BlockFinder<IMyTerminalBlock>(this).inSameConstructAs(Me).withCustomPredicate(item => item.HasInventory).getAll());
-            new PartDisplay(new BlockFinder<IMyTextPanel>(this).withCustomData(settings.ComponentDisplayTag).get(), partSummary.Amounts)
+            ComponentSummary partSummary = new ComponentSummary(new BlockFinder<IMyTerminalBlock>(this).InSameConstructAs(Me).WithCustomPredicate(item => item.HasInventory).GetAll());
+            new PartDisplay(new BlockFinder<IMyTextPanel>(this).WithCustomData(settings.ComponentDisplayTag).Get(), partSummary.FloatAmounts)
                 .AlwaysShow()
                 .Build();
         }
@@ -218,7 +218,7 @@ namespace IngameScript
             ingotMover?.Update();
             ammoMover?.Update();
             toolMover?.Update();
-            Display.render();
+            Display.Render();
         }
     }
 }

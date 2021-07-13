@@ -32,45 +32,45 @@ namespace IngameScript
                 description = new List<string>();
             }
 
-            public BlockFinder<T> withName(string name)
+            public BlockFinder<T> WithName(string name)
             {
                 description.Add("the name '" + name + "'");
-                return matchingPredicate(block => block.CustomName.Equals(name));
+                return MatchingPredicate(block => block.CustomName.Equals(name));
             }
 
-            public BlockFinder<T> inSameConstructAs(IMyTerminalBlock terminalBlock)
+            public BlockFinder<T> InSameConstructAs(IMyTerminalBlock terminalBlock)
             {
                 description.Add("in the same construct as " + terminalBlock.CustomName);
-                return matchingPredicate(block => block.IsSameConstructAs(terminalBlock));
+                return MatchingPredicate(block => block.IsSameConstructAs(terminalBlock));
             }
 
-            public BlockFinder<T> withCustomData(string data)
+            public BlockFinder<T> WithCustomData(string data)
             {
                 description.Add("'" + data + "' in custom data");
-                return matchingPredicate(block => block.CustomData.Contains(data));
+                return MatchingPredicate(block => block.CustomData.Contains(data));
             }
 
-            public BlockFinder<T> withoutCustomData(string data)
+            public BlockFinder<T> WithoutCustomData(string data)
             {
                 description.Add("'" + data + "' NOT in custom data");
-                return matchingPredicate(block => !block.CustomData.Contains(data));
+                return MatchingPredicate(block => !block.CustomData.Contains(data));
             }
 
-            public BlockFinder<T> withCustomPredicate(Func<T, bool> predicate)
+            public BlockFinder<T> WithCustomPredicate(Func<T, bool> predicate)
             {
                 description.Add("a custom predicate");
-                return matchingPredicate(predicate);
+                return MatchingPredicate(predicate);
             }
 
-            private BlockFinder<T> matchingPredicate(Func<T, bool> predicate)
+            private BlockFinder<T> MatchingPredicate(Func<T, bool> predicate)
             {
                 predicates.Add(predicate);
                 return this;
             }
 
-            public T get()
+            public T Get()
             {
-                T value = tryGet();
+                T value = TryGet();
                 if (value == null)
                 {
                     string error = "Could not find block of type " + typeof(T).Name;
@@ -88,9 +88,9 @@ namespace IngameScript
                 return value;
             }
 
-            public T tryGet()
+            public T TryGet()
             {
-                List<T> results = getAll();
+                List<T> results = GetAll();
                 if (results.Count == 0)
                 {
                     return null;
@@ -98,14 +98,14 @@ namespace IngameScript
                 return results[0];
             }
 
-            public List<T> getAll()
+            public List<T> GetAll()
             {
                 List<T> list = new List<T>();
-                gridTerminalSystem.GetBlocksOfType(list, test);
+                gridTerminalSystem.GetBlocksOfType(list, Test);
                 return list;
             }
 
-            private bool test(T block)
+            private bool Test(T block)
             {
                 foreach (Func<T, bool> predicate in predicates)
                 {

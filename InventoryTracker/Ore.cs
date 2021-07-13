@@ -90,6 +90,17 @@ namespace IngameScript
                 }
                 return types;
             }
+
+            public static readonly Dictionary<string, OreType> NameToType;
+
+            static Ore()
+            {
+                NameToType = new Dictionary<string, OreType>();
+                foreach (OreType type in Types())
+                {
+                    NameToType.Add(type.ToString(), type);
+                }
+            }
         }
     }
 }

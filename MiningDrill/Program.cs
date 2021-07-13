@@ -70,76 +70,76 @@ namespace IngameScript
             string tagA = settings.ForwardLegTag;
             string tagB = settings.RearLegTag;
             string extenderTag = settings.ExtenderLegTag;
-            IMyPistonBase pistonA = new BlockFinder<IMyPistonBase>(this).withCustomData(tagA).get();
-            IMyShipMergeBlock mergeA = new BlockFinder<IMyShipMergeBlock>(this).withCustomData(tagA).get();
-            IMyShipConnector connectorA = new BlockFinder<IMyShipConnector>(this).withCustomData(tagA).get();
-            IMyPistonBase pistonB = new BlockFinder<IMyPistonBase>(this).withCustomData(tagB).get();
-            IMyShipMergeBlock mergeB = new BlockFinder<IMyShipMergeBlock>(this).withCustomData(tagB).get();
-            IMyShipConnector connectorB = new BlockFinder<IMyShipConnector>(this).withCustomData(tagB).get();
-            IMyPistonBase pistonExtender = new BlockFinder<IMyPistonBase>(this).withCustomData(extenderTag).get();
+            IMyPistonBase pistonA = new BlockFinder<IMyPistonBase>(this).WithCustomData(tagA).Get();
+            IMyShipMergeBlock mergeA = new BlockFinder<IMyShipMergeBlock>(this).WithCustomData(tagA).Get();
+            IMyShipConnector connectorA = new BlockFinder<IMyShipConnector>(this).WithCustomData(tagA).Get();
+            IMyPistonBase pistonB = new BlockFinder<IMyPistonBase>(this).WithCustomData(tagB).Get();
+            IMyShipMergeBlock mergeB = new BlockFinder<IMyShipMergeBlock>(this).WithCustomData(tagB).Get();
+            IMyShipConnector connectorB = new BlockFinder<IMyShipConnector>(this).WithCustomData(tagB).Get();
+            IMyPistonBase pistonExtender = new BlockFinder<IMyPistonBase>(this).WithCustomData(extenderTag).Get();
             return new Walker(0.1f, new PistonAssembly(pistonA, connectorA, mergeA), new PistonAssembly(pistonB, connectorB, mergeB), pistonExtender);
         }
 
         public ConstructionController buildConstructionController()
         {
-            List<IMyShipWelder> welders = new BlockFinder<IMyShipWelder>(this).inSameConstructAs(Me).getAll();
-            List<IMyShipGrinder> grinders = new BlockFinder<IMyShipGrinder>(this).inSameConstructAs(Me).getAll();
-            IMyPistonBase piston = new BlockFinder<IMyPistonBase>(this).withCustomData(settings.ConstructionTag).get();
-            IMyConveyorSorter contructionSorter = new BlockFinder<IMyConveyorSorter>(this).inSameConstructAs(Me).withCustomData(settings.BuildFilterTag).get();
-            IMyConveyorSorter decontructionSorter = new BlockFinder<IMyConveyorSorter>(this).inSameConstructAs(Me).withCustomData(settings.DestructionFilterTag).get();
+            List<IMyShipWelder> welders = new BlockFinder<IMyShipWelder>(this).InSameConstructAs(Me).GetAll();
+            List<IMyShipGrinder> grinders = new BlockFinder<IMyShipGrinder>(this).InSameConstructAs(Me).GetAll();
+            IMyPistonBase piston = new BlockFinder<IMyPistonBase>(this).WithCustomData(settings.ConstructionTag).Get();
+            IMyConveyorSorter contructionSorter = new BlockFinder<IMyConveyorSorter>(this).InSameConstructAs(Me).WithCustomData(settings.BuildFilterTag).Get();
+            IMyConveyorSorter decontructionSorter = new BlockFinder<IMyConveyorSorter>(this).InSameConstructAs(Me).WithCustomData(settings.DestructionFilterTag).Get();
             return new ConstructionController(piston, welders, grinders, contructionSorter, decontructionSorter);
         }
 
         public DrillController buildDrillController(IMyMotorAdvancedStator motor)
         {
-            List<IMyShipDrill> drills = new BlockFinder<IMyShipDrill>(this).inSameConstructAs(Me).getAll();
+            List<IMyShipDrill> drills = new BlockFinder<IMyShipDrill>(this).InSameConstructAs(Me).GetAll();
             return new DrillController(motor, drills);
         }
 
         public IMyMotorAdvancedStator getDrillMotor()
         {
-            return new BlockFinder<IMyMotorAdvancedStator>(this).inSameConstructAs(Me).get();
+            return new BlockFinder<IMyMotorAdvancedStator>(this).InSameConstructAs(Me).Get();
         }
 
         public BracingLeg buildBracingLeg()
         {
             string tag = settings.BraceLegTag;
-            IMyLandingGear landingGear = new BlockFinder<IMyLandingGear>(this).withCustomData(tag).get();
-            IMyPistonBase piston = new BlockFinder<IMyPistonBase>(this).withCustomData(tag).get();
+            IMyLandingGear landingGear = new BlockFinder<IMyLandingGear>(this).WithCustomData(tag).Get();
+            IMyPistonBase piston = new BlockFinder<IMyPistonBase>(this).WithCustomData(tag).Get();
             return new BracingLeg(landingGear, piston);
         }
 
         public Display buildStatusDisplay()
         {
-            return new StatusDisplay(new BlockFinder<IMyTextPanel>(this).withCustomData(settings.StatusDisplayTag).get(), 36, 30)
-                .withCenteredLabel("Mining drill")
-                .withHorizontalLine()
-                .withRow("State", () => state.ToString())
-                .withRow("Depth", () => CurrentDepth().ToString("n2") + " m")
-                .withRow("Target depth", () => settings.DesiredDepth.ToString("n2") + " m")
-                .withRow("Average velocity", VelocityInfo)
-                .withHorizontalLine()
-                .withRow("Drill", () => drillController.Info())
-                .withRow("Walker", () => walker.GetState().ToString())
-                .withRow("Constructor", () => constructionController.Info())
-                .withRow("Step count", () => savedState.StepCount.ToString())
-                .withRow("Bracing leg", () => bracingLeg.Info())
-                .build();
+            return new StatusDisplay(new BlockFinder<IMyTextPanel>(this).WithCustomData(settings.StatusDisplayTag).Get(), 36, 30)
+                .WithCenteredLabel("Mining drill")
+                .WithHorizontalLine()
+                .WithRow("State", state.ToString)
+                .WithRow("Depth", () => CurrentDepth().ToString("n2") + " m")
+                .WithRow("Target depth", () => settings.DesiredDepth.ToString("n2") + " m")
+                .WithRow("Average velocity", VelocityInfo)
+                .WithHorizontalLine()
+                .WithRow("Drill", drillController.Info)
+                .WithRow("Walker", () => walker.GetState().ToString())
+                .WithRow("Constructor", constructionController.Info)
+                .WithRow("Step count", savedState.StepCount.ToString)
+                .WithRow("Bracing leg", bracingLeg.Info)
+                .Build();
         }
 
         public Display buildOreDisplay()
         {
-            OreSummary oreSummary = new OreSummary(new BlockFinder<IMyTerminalBlock>(this).withCustomPredicate(block => block is IMyCargoContainer).inSameConstructAs(Me).getAll());
-            IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).inSameConstructAs(Me).withCustomData(settings.OreDisplaytag).get();
-            return new OreDisplay(textPanel, oreSummary.Amounts)
+            OreSummary oreSummary = new OreSummary(new BlockFinder<IMyTerminalBlock>(this).WithCustomPredicate(block => block is IMyCargoContainer).InSameConstructAs(Me).GetAll());
+            IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).InSameConstructAs(Me).WithCustomData(settings.OreDisplaytag).Get();
+            return new OreDisplay(textPanel, oreSummary.FloatAmounts)
                 .Build();
         }
 
         public Display buildPartsDisplay()
         {
-            PartSummary partSummary = new PartSummary(new BlockFinder<IMyTerminalBlock>(this).withCustomPredicate(block => block is IMyCargoContainer).inSameConstructAs(Me).getAll());
-            IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).inSameConstructAs(Me).withCustomData(settings.PartDisplaytag).get();
-            return new PartDisplay(textPanel, partSummary.Amounts)
+            ComponentSummary partSummary = new ComponentSummary(new BlockFinder<IMyTerminalBlock>(this).WithCustomPredicate(block => block is IMyCargoContainer).InSameConstructAs(Me).GetAll());
+            IMyTextPanel textPanel = new BlockFinder<IMyTextPanel>(this).InSameConstructAs(Me).WithCustomData(settings.PartDisplaytag).Get();
+            return new PartDisplay(textPanel, partSummary.FloatAmounts)
                 .WithSubassemblyCounter(new PartDisplay.SubassemblyCounter.Builder("Sections")
                     .WithPart(Component.ComponentType.Motor, 28)
                     .WithPart(Component.ComponentType.SmallTube, 56)
@@ -164,7 +164,7 @@ namespace IngameScript
             walker.Update();
             constructionController.Update();
             bracingLeg.Update();
-            Display.render();
+            Display.Render();
         }
 
         public void RunArgument(string argument)

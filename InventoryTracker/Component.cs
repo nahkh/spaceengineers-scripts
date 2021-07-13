@@ -47,6 +47,7 @@ namespace IngameScript
                 SteelPlate,
                 Superconductor,
                 Thrust,
+                ZoneChip,
             }
 
             public static MyItemType ItemType(ComponentType partType)
@@ -66,6 +67,17 @@ namespace IngameScript
                     types.Add(ItemType(type));
                 }
                 return types;
+            }
+
+            public static readonly Dictionary<string, ComponentType> NameToType;
+
+            static Component()
+            {
+                NameToType = new Dictionary<string, ComponentType>();
+                foreach (ComponentType type in Types())
+                {
+                    NameToType.Add(type.ToString(), type);
+                }
             }
         }
     }

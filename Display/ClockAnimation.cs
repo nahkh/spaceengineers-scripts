@@ -22,20 +22,21 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class ComponentSummary : InventorySummary<Component.ComponentType>
+        public class ClockAnimation
         {
+            private static readonly TimeSpan interval = TimeSpan.FromSeconds(1);
+            private DateTime lastUpdate = DateTime.Now;
+            int position = 0;
+            string[] elements = new string[] { "/", "-", "\\", "|" };
 
-            public ComponentSummary(List<IMyTerminalBlock> cargoContainers) : base(cargoContainers)
+            public string Get()
             {
-            }
-
-            protected override MyItemType ItemType(Component.ComponentType t)
-            {
-                return Component.ItemType(t);
-            }
-            protected override IEnumerable<Component.ComponentType> Types()
-            {
-                return Component.Types();
+                if (lastUpdate + interval < DateTime.Now)
+                {
+                    lastUpdate = DateTime.Now;
+                    position = (position + 1) % elements.Length;
+                }
+                return elements[position];
             }
         }
     }
