@@ -48,18 +48,10 @@ namespace IngameScript
                     {
                         int amount = item.Amount.ToIntSafe();
                         MyDefinitionId blueprintId = item.BlueprintId;
-                        string subtypeName = blueprintId.SubtypeName;
-                        if (subtypeName.EndsWith("Component"))
+                        Component.ComponentType type;
+                        if(Component.TryFromDefinitionId(blueprintId, out type))
                         {
-                            subtypeName = subtypeName.Substring(0, subtypeName.Length - 9);
-                        }
-                        if (Component.NameToType.ContainsKey(subtypeName))
-                        {
-                            Component.ComponentType type = Component.NameToType[subtypeName];
                             summary[type] = summary.GetValueOrDefault(type, 0) + amount;
-                        } else
-                        {
-                            logger.Invoke(subtypeName);
                         }
                     }
                 }

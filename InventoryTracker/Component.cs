@@ -54,6 +54,47 @@ namespace IngameScript
             {
                 return MyItemType.MakeComponent(partType.ToString());
             }
+
+            public static MyDefinitionId DefinitionId(ComponentType partType)
+            {
+                string postFix = "";
+                switch(partType)
+                {
+                    case ComponentType.Computer:
+                    case ComponentType.Construction:
+                    case ComponentType.Detector:
+                    case ComponentType.Explosives:
+                    case ComponentType.Girder:
+                    case ComponentType.GravityGenerator:
+                    case ComponentType.Medical:
+                    case ComponentType.Motor:
+                    case ComponentType.RadioCommunication:
+                    case ComponentType.Reactor:
+                    case ComponentType.Thrust:
+                        postFix += "Component";
+                        break;
+                }
+                return MyDefinitionId.Parse("MyObjectBuilder_BlueprintDefinition/" + partType.ToString() + postFix);
+            }
+
+            public static bool TryFromDefinitionId(MyDefinitionId definitionId, out ComponentType type)
+            {
+                string subtypeName = definitionId.SubtypeName;
+                if (subtypeName.EndsWith("Component"))
+                {
+                    subtypeName = subtypeName.Substring(0, subtypeName.Length - 9);
+                }
+                if (NameToType.ContainsKey(subtypeName))
+                {
+                    type = NameToType[subtypeName];
+                    return true;
+                } else
+                {
+                    type = ComponentType.BulletproofGlass;
+                    return false;
+                }
+            }
+
             public static IEnumerable<ComponentType> Types()
             {
                 return Enum.GetValues(typeof(ComponentType)).Cast<ComponentType>();

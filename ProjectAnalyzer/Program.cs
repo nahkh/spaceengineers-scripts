@@ -22,7 +22,9 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+        Settings settings;
         ProductionSummary productionSummary;
+        AssemblerManager assemblerManager;
         ComponentSummary componentSummary;
         Dictionary<Component.ComponentType, int> neededComponents;
         Dictionary<string, int> rawData;
@@ -30,14 +32,17 @@ namespace IngameScript
 
         public Program()
         {
-            projector = new BlockFinder<IMyProjector>(this).WithCustomData("Projector-Test").Get();
+            settings = new Settings(Me);
+            projector = new BlockFinder<IMyProjector>(this).WithCustomData(settings.ProjectorTag).Get();
             rawData = ProjectorExtractor.ExtractFromProjector(projector.RemainingBlocksPerType);
             componentSummary = new ComponentSummary(new BlockFinder<IMyTerminalBlock>(this)
                 .InSameConstructAs(Me)
                 .WithCustomPredicate(block => block.HasInventory)
                 .GetAll());
             new ScriptDisplay(Me, Runtime, name: "ProjectAnalyzer");
-            productionSummary = new ProductionSummary(new BlockFinder<IMyAssembler>(this).InSameConstructAs(Me).GetAll(), Echo);
+            List<IMyAssembler> assemblers = new BlockFinder<IMyAssembler>(this).InSameConstructAs(Me).WithCustomData(settings.AssemblerTag).GetAll();
+            productionSummary = new ProductionSummary(assemblers, Echo);
+            assemblerManager = new AssemblerManager(assemblers, Echo);
             neededComponents = CalculateNeededAmounts();
             BuildAnalyzerDisplay();
             
@@ -46,10 +51,25 @@ namespace IngameScript
 
         private Dictionary<Component.ComponentType, int> CalculateNeededAmounts()
         {
+            MyCubeSize cubeSize;
+            switch(settings.ProjectorSize)
+            {
+                case "Large":
+                    cubeSize = MyCubeSize.Large;
+                    break;
+                case "Small":
+                    cubeSize = MyCubeSize.Small;
+                    break;
+                case "Auto":
+                default:
+                    cubeSize = projector.CubeGrid.GridSizeEnum;
+                    break;
+            }
+
             Dictionary<Component.ComponentType, int> neededComponents = new Dictionary<Component.ComponentType, int>();
             foreach (string id in rawData.Keys)
             {
-                BlockType blockType = BlockIndex.GetBlockType(id, projector.CubeGrid.GridSizeEnum);
+                BlockType blockType = BlockIndex.GetBlockType(id, cubeSize);
                 if (blockType == null)
                 {
                     Echo(id);
@@ -70,10 +90,10 @@ namespace IngameScript
             return new AnalyzedPartDisplay(
                         new BlockFinder<IMyTextPanel>(this)
                             .InSameConstructAs(Me)
-                            .WithCustomData("Projector-Need-LCD")
+                            .WithCustomData(settings.DisplayTag)
                             .Get(),
-                        CachingProvider.Of(neededComponents),
-                        CachingProvider.Of(componentSummary.IntAmounts),
+                        CachingProvider.Of(() => neededComponents, TimeSpan.FromSeconds(10)),
+                        CachingProvider.Of(componentSummary.IntAmounts, TimeSpan.FromSeconds(10)),
                         CachingProvider.Of(productionSummary.ProductionQueueSummary, TimeSpan.FromSeconds(10)))
                     .Build();
         }
@@ -85,7 +105,38 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
+            if (argument == "CLEAR")
+            {
+                Clear();
+            }
+            if (argument == "ENQUEUE")
+            {
+                Enqueue();
+            }
+            if (argument == "RECALCULATE")
+            {
+                neededComponents = CalculateNeededAmounts();
+            }
             Display.Render();
+        }
+
+        private void Clear()
+        {
+            assemblerManager.ClearQueues();
+        }
+
+        private void Enqueue()
+        {
+            Dictionary<Component.ComponentType, int> availableComponents = componentSummary.IntAmounts();
+            Dictionary<Component.ComponentType, int> enqueuedComponents = productionSummary.ProductionQueueSummary();
+            foreach (Component.ComponentType type in Component.Types())
+            {
+                int needed = neededComponents.GetValueOrDefault(type, 0);
+                int available = availableComponents.GetValueOrDefault(type, 0);
+                int enqueued = enqueuedComponents.GetValueOrDefault(type, 0);
+                int toEnqueue = needed - available - enqueued;
+                assemblerManager.AddToQueue(type, toEnqueue);
+            }
         }
     }
 }
