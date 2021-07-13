@@ -56,7 +56,7 @@ namespace IngameScript
 
                 string[] initializer =
                 {
-                                       // C:\Program Files (x86)\Steam\steamapps\common\SpaceEngineers\Content\Data\CubeBlocks\CubeBlocks.sbc
+                    // C:\Program Files (x86)\Steam\steamapps\common\SpaceEngineers\Content\Data\CubeBlocks\CubeBlocks.sbc
                     "CubeBlock/LargeRailStraight%LS12C8J4",
                     "DebugSphere1/DebugSphereLarge%LS10B20",
                     "DebugSphere2/DebugSphereLarge%LS10B20",
