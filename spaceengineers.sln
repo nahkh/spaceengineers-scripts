@@ -29,7 +29,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryManager", "Invento
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryController", "BatteryController\BatteryController.csproj", "{BFC89F62-77EC-4703-B3A4-C8EDB6B8A9A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMonitor", "PowerMonitor\PowerMonitor.csproj", "{7137E84B-8364-4E11-ABA7-E6F91A67AD7E}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Renderer", "Renderer\Renderer.shproj", "{1974C929-C91F-4798-A75D-063D6AE5B886}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeNetwork", "TradeNetwork\TradeNetwork.csproj", "{E0E7F0CC-A049-43B3-8968-3365DB8C26BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderTest", "RenderTest\RenderTest.csproj", "{7137E84B-8364-4E11-ABA7-E6F91A67AD7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerMonitor", "PowerMonitor\PowerMonitor.csproj", "{A2CB7C62-C71D-40D6-9B5F-7E217B23A91A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamageMonitor", "DamageMonitor\DamageMonitor.csproj", "{5044058B-DF16-4F4A-811D-13EC7AE80650}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Navigator", "Navigator\Navigator.shproj", "{5196C95F-AD63-40AB-A0B3-9604F76B97DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cartographer", "Cartographer\Cartographer.csproj", "{2822E8EC-AA09-45E4-94C1-9FE7291FB75D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipNavigator", "ShipNavigator\ShipNavigator.csproj", "{11E1CE98-CE30-4460-A90E-75869AAB2156}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAnalyzer", "ProjectAnalyzer\ProjectAnalyzer.csproj", "{A8304628-E2AD-4209-A817-03DBD77146E7}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BlockIndex", "BlockIndex\BlockIndex.shproj", "{3825D9B2-AFEA-4434-AF04-1C7382767472}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CachingProvider", "CachingProvider\CachingProvider.shproj", "{20F27AB4-FEA0-4012-9ECF-0E13C148D787}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -39,28 +59,52 @@ Global
 		BlockFinder\BlockFinder.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
 		Display\Display.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
 		PidController\PidController.projitems*{0efd8263-6953-454b-870f-e1116a10148d}*SharedItemsImports = 4
+		BlockFinder\BlockFinder.projitems*{11e1ce98-ce30-4460-a90e-75869aab2156}*SharedItemsImports = 4
+		Display\Display.projitems*{11e1ce98-ce30-4460-a90e-75869aab2156}*SharedItemsImports = 4
+		Navigator\Navigator.projitems*{11e1ce98-ce30-4460-a90e-75869aab2156}*SharedItemsImports = 4
+		Renderer\Renderer.projitems*{1974c929-c91f-4798-a75d-063d6ae5b886}*SharedItemsImports = 13
 		AutoDockShared\AutoDockShared.projitems*{1c39f8d5-fc0f-4be5-ac61-7e56b0837da1}*SharedItemsImports = 13
+		CachingProvider\CachingProvider.projitems*{20f27ab4-fea0-4012-9ecf-0e13c148d787}*SharedItemsImports = 13
+		BlockFinder\BlockFinder.projitems*{2822e8ec-aa09-45e4-94c1-9fe7291fb75d}*SharedItemsImports = 4
+		Display\Display.projitems*{2822e8ec-aa09-45e4-94c1-9fe7291fb75d}*SharedItemsImports = 4
+		Navigator\Navigator.projitems*{2822e8ec-aa09-45e4-94c1-9fe7291fb75d}*SharedItemsImports = 4
 		BlockFinder\BlockFinder.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
 		Display\Display.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
 		Walker\Walker.projitems*{2ba0d73b-02f2-4191-b5a8-38981ff61203}*SharedItemsImports = 4
+		BlockIndex\BlockIndex.projitems*{3825d9b2-afea-4434-af04-1c7382767472}*SharedItemsImports = 13
+		BlockFinder\BlockFinder.projitems*{5044058b-df16-4f4a-811d-13ec7ae80650}*SharedItemsImports = 4
+		Display\Display.projitems*{5044058b-df16-4f4a-811d-13ec7ae80650}*SharedItemsImports = 4
+		Renderer\Renderer.projitems*{5044058b-df16-4f4a-811d-13ec7ae80650}*SharedItemsImports = 4
+		Navigator\Navigator.projitems*{5196c95f-ad63-40ab-a0b3-9604f76b97da}*SharedItemsImports = 13
 		BlockFinder\BlockFinder.projitems*{61eba249-19f3-48b6-a25b-a4cee90168ba}*SharedItemsImports = 13
 		AutoDockShared\AutoDockShared.projitems*{6ac0ed42-5048-4360-8ecc-a275e91311ce}*SharedItemsImports = 4
 		BlockFinder\BlockFinder.projitems*{6ac0ed42-5048-4360-8ecc-a275e91311ce}*SharedItemsImports = 4
 		Display\Display.projitems*{6ac0ed42-5048-4360-8ecc-a275e91311ce}*SharedItemsImports = 4
 		BlockFinder\BlockFinder.projitems*{7137e84b-8364-4e11-aba7-e6f91a67ad7e}*SharedItemsImports = 4
 		Display\Display.projitems*{7137e84b-8364-4e11-aba7-e6f91a67ad7e}*SharedItemsImports = 4
+		Renderer\Renderer.projitems*{7137e84b-8364-4e11-aba7-e6f91a67ad7e}*SharedItemsImports = 4
 		PidController\PidController.projitems*{853f2341-53a5-4d32-82f9-455aa5c66896}*SharedItemsImports = 13
 		BlockFinder\BlockFinder.projitems*{92192a5c-df36-4ae1-b7a7-1b21c5ffaa32}*SharedItemsImports = 4
 		Display\Display.projitems*{92192a5c-df36-4ae1-b7a7-1b21c5ffaa32}*SharedItemsImports = 4
 		InventoryTracker\InventoryTracker.projitems*{92192a5c-df36-4ae1-b7a7-1b21c5ffaa32}*SharedItemsImports = 4
+		BlockFinder\BlockFinder.projitems*{a2cb7c62-c71d-40d6-9b5f-7e217b23a91a}*SharedItemsImports = 4
+		Display\Display.projitems*{a2cb7c62-c71d-40d6-9b5f-7e217b23a91a}*SharedItemsImports = 4
 		BlockFinder\BlockFinder.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
 		Display\Display.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
 		InventoryTracker\InventoryTracker.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
 		Walker\Walker.projitems*{a56690df-29c6-44a6-bcf4-4f3a1749923a}*SharedItemsImports = 4
+		BlockFinder\BlockFinder.projitems*{a8304628-e2ad-4209-a817-03dbd77146e7}*SharedItemsImports = 4
+		BlockIndex\BlockIndex.projitems*{a8304628-e2ad-4209-a817-03dbd77146e7}*SharedItemsImports = 4
+		CachingProvider\CachingProvider.projitems*{a8304628-e2ad-4209-a817-03dbd77146e7}*SharedItemsImports = 4
+		Display\Display.projitems*{a8304628-e2ad-4209-a817-03dbd77146e7}*SharedItemsImports = 4
+		InventoryTracker\InventoryTracker.projitems*{a8304628-e2ad-4209-a817-03dbd77146e7}*SharedItemsImports = 4
 		Display\Display.projitems*{afd21ec4-21db-4fa9-828f-196abe5a35d0}*SharedItemsImports = 13
 		BlockFinder\BlockFinder.projitems*{bfc89f62-77ec-4703-b3a4-c8edb6b8a9a7}*SharedItemsImports = 4
 		Display\Display.projitems*{bfc89f62-77ec-4703-b3a4-c8edb6b8a9a7}*SharedItemsImports = 4
 		Walker\Walker.projitems*{cdbfec0c-e71b-450e-a997-e6ce6b3dc957}*SharedItemsImports = 13
+		BlockFinder\BlockFinder.projitems*{e0e7f0cc-a049-43b3-8968-3365db8c26bb}*SharedItemsImports = 4
+		Display\Display.projitems*{e0e7f0cc-a049-43b3-8968-3365db8c26bb}*SharedItemsImports = 4
+		InventoryTracker\InventoryTracker.projitems*{e0e7f0cc-a049-43b3-8968-3365db8c26bb}*SharedItemsImports = 4
 		InventoryTracker\InventoryTracker.projitems*{e59582f5-d6f2-4d01-bea2-4d0df3c30040}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,8 +125,20 @@ Global
 		{92192A5C-DF36-4AE1-B7A7-1B21C5FFAA32}.Debug|x64.Build.0 = Debug|x64
 		{BFC89F62-77EC-4703-B3A4-C8EDB6B8A9A7}.Debug|x64.ActiveCfg = Debug|x64
 		{BFC89F62-77EC-4703-B3A4-C8EDB6B8A9A7}.Debug|x64.Build.0 = Debug|x64
+		{E0E7F0CC-A049-43B3-8968-3365DB8C26BB}.Debug|x64.ActiveCfg = Debug|x64
+		{E0E7F0CC-A049-43B3-8968-3365DB8C26BB}.Debug|x64.Build.0 = Debug|x64
 		{7137E84B-8364-4E11-ABA7-E6F91A67AD7E}.Debug|x64.ActiveCfg = Debug|x64
 		{7137E84B-8364-4E11-ABA7-E6F91A67AD7E}.Debug|x64.Build.0 = Debug|x64
+		{A2CB7C62-C71D-40D6-9B5F-7E217B23A91A}.Debug|x64.ActiveCfg = Debug|x64
+		{A2CB7C62-C71D-40D6-9B5F-7E217B23A91A}.Debug|x64.Build.0 = Debug|x64
+		{5044058B-DF16-4F4A-811D-13EC7AE80650}.Debug|x64.ActiveCfg = Debug|x64
+		{5044058B-DF16-4F4A-811D-13EC7AE80650}.Debug|x64.Build.0 = Debug|x64
+		{2822E8EC-AA09-45E4-94C1-9FE7291FB75D}.Debug|x64.ActiveCfg = Debug|x64
+		{2822E8EC-AA09-45E4-94C1-9FE7291FB75D}.Debug|x64.Build.0 = Debug|x64
+		{11E1CE98-CE30-4460-A90E-75869AAB2156}.Debug|x64.ActiveCfg = Debug|x64
+		{11E1CE98-CE30-4460-A90E-75869AAB2156}.Debug|x64.Build.0 = Debug|x64
+		{A8304628-E2AD-4209-A817-03DBD77146E7}.Debug|x64.ActiveCfg = Debug|x64
+		{A8304628-E2AD-4209-A817-03DBD77146E7}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
