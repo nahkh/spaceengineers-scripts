@@ -24,10 +24,13 @@ namespace IngameScript
     {
         public class AnalyzedPartDisplay
         {
+            private readonly int wideLcdWidth = 74;
             private readonly IMyTextSurface textSurface;
             private readonly Func<Dictionary<Component.ComponentType, int>> neededPartsProvider;
             private readonly Func<Dictionary<Component.ComponentType, int>> currentInventoryProvider;
             private readonly Func<Dictionary<Component.ComponentType, int>> productionCount;
+            private readonly Settings settings;
+            
 
             enum ColumnType
             {
@@ -35,31 +38,50 @@ namespace IngameScript
                 Available,
                 Missing,
                 Building,
+                Cost,
             }
 
-            public AnalyzedPartDisplay(IMyTextSurface textSurface, Func<Dictionary<Component.ComponentType, int>> neededPartsProvider, Func<Dictionary<Component.ComponentType, int>> currentInventoryProvider, Func<Dictionary<Component.ComponentType, int>> productionCount)
+            public AnalyzedPartDisplay(
+                IMyTextSurface textSurface, 
+                Func<Dictionary<Component.ComponentType, int>> neededPartsProvider,
+                Func<Dictionary<Component.ComponentType, int>> currentInventoryProvider,
+                Func<Dictionary<Component.ComponentType, int>> productionCount,
+                Settings settings)
             {
                 this.textSurface = textSurface;
                 this.neededPartsProvider = neededPartsProvider;
                 this.currentInventoryProvider = currentInventoryProvider;
                 this.productionCount = productionCount;
+                this.settings = settings;
             }
 
             public Display Build()
             {
-                TableDisplay<Component.ComponentType, ColumnType> table = new TableDisplay<Component.ComponentType, ColumnType>(textSurface, 72, 30);
+                TableDisplay<Component.ComponentType, ColumnType> table = new TableDisplay<Component.ComponentType, ColumnType>(textSurface, wideLcdWidth, 30);
 
                 foreach(Component.ComponentType type in Component.Types())
                 {
                     table.Row(type, NeedAnyOf(type));
                 }
-                return table.WithLabel("Parts needed for project")
-                    .Column(ColumnType.Total, alignment:TableDisplay<Component.ComponentType, ColumnType>.Alignment.RIGHT)
-                    .Column(ColumnType.Available, alignment: TableDisplay<Component.ComponentType, ColumnType>.Alignment.RIGHT, columnWidth:10)
-                    .Column(ColumnType.Missing, alignment: TableDisplay<Component.ComponentType, ColumnType>.Alignment.RIGHT, columnWidth: 10)
-                    .Column(ColumnType.Building, alignment: TableDisplay<Component.ComponentType, ColumnType>.Alignment.RIGHT, columnWidth: 10)
-                    .WithData(Render)
-                    .Build();
+                table.Column(ColumnType.Total, alignment: StringUtil.Alignment.RIGHT, columnWidth: 7)
+                    .Column(ColumnType.Available, alignment: StringUtil.Alignment.RIGHT, columnWidth: 10)
+                    .Column(ColumnType.Missing, alignment: StringUtil.Alignment.RIGHT, columnWidth: 10)
+                    .Column(ColumnType.Building, alignment: StringUtil.Alignment.RIGHT, columnWidth: 10)
+                    .WithData(Render);
+
+                if (settings.ShowPrices)
+                {
+                    table
+                        .Column(ColumnType.Cost, alignment: StringUtil.Alignment.RIGHT)
+                        .AdditionalRow(() => "Parts cost" + StringUtil.Pad(RenderPartCost(), StringUtil.Alignment.RIGHT, wideLcdWidth - 10))
+                        .AdditionalRow(() => "Construction fee" + StringUtil.Pad(RenderFee(), StringUtil.Alignment.RIGHT, wideLcdWidth - 16))
+                        .AdditionalRow(() => "Total cost" + StringUtil.Pad(RenderTotalCost(), StringUtil.Alignment.RIGHT, wideLcdWidth - 10));
+                } else
+                {
+                    table.WithLabel("Parts needed for project");
+                }
+
+                return table.Build();
             }
 
             private string Render(Component.ComponentType component, ColumnType column)
@@ -84,9 +106,48 @@ namespace IngameScript
                             return "";
                         }
                         return productionCount.ToString();
+                    case ColumnType.Cost:
+                        decimal cost = NeededCount(component) * CostPer(component);
+                        if (cost == 0)
+                        {
+                            return "";
+                        }
+                        return cost.ToString("n0");
                 }
                 return "";
             }
+
+            private string RenderTotalCost()
+            {
+                decimal partCost = CalculatePartCost();
+                return "= " + (partCost + CalculateFee(partCost)).ToString("n0") + " SC";
+            }
+
+            private string RenderPartCost()
+            {
+                return CalculatePartCost().ToString("n0") + " SC";
+            }
+            private string RenderFee()
+            {
+                return "+ " + CalculateFee(CalculatePartCost()).ToString("n0") + " SC";
+            }
+
+            private decimal CalculatePartCost()
+            {
+                decimal totalCost = 0;
+                foreach (Component.ComponentType type in Component.Types())
+                {
+                    int neededCount = NeededCount(type);
+                    totalCost += neededCount * CostPer(type);
+                }
+                return totalCost;
+            }
+
+            private decimal CalculateFee(decimal partCost)
+            {
+                return Math.Ceiling(Math.Max(settings.MinimalMarkup, settings.Markup * partCost));
+            }
+
 
             private int NeededCount(Component.ComponentType component)
             {
@@ -105,6 +166,11 @@ namespace IngameScript
             private int ProductionCount(Component.ComponentType component)
             {
                 return productionCount.Invoke().GetValueOrDefault(component, 0); ;
+            }
+
+            private decimal CostPer(Component.ComponentType component)
+            {
+                return settings.PriceFor(component);
             }
 
             private Func<bool> NeedAnyOf(Component.ComponentType type)

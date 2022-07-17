@@ -23,12 +23,15 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
         Settings settings;
+        MyCubeSize cubeSize;
         ProductionSummary productionSummary;
         AssemblerManager assemblerManager;
         ComponentSummary componentSummary;
         Dictionary<Component.ComponentType, int> neededComponents;
         Dictionary<string, int> rawData;
         IMyProjector projector;
+        CachingProvider.Cache<Dictionary<Component.ComponentType, int>> availableItemCache;
+        CachingProvider.Cache<Dictionary<Component.ComponentType, int>> productionQueueCache;
 
         public Program()
         {
@@ -43,16 +46,18 @@ namespace IngameScript
             List<IMyAssembler> assemblers = new BlockFinder<IMyAssembler>(this).InSameConstructAs(Me).WithCustomData(settings.AssemblerTag).GetAll();
             productionSummary = new ProductionSummary(assemblers, Echo);
             assemblerManager = new AssemblerManager(assemblers, Echo);
-            neededComponents = CalculateNeededAmounts();
+            neededComponents = new Dictionary<Component.ComponentType, int>();
+            DetectCubeSize();
+            CalculateNeededAmounts();
+            SetCubeSize();
+            SetupCaches();
             BuildAnalyzerDisplay();
-            
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
         }
 
-        private Dictionary<Component.ComponentType, int> CalculateNeededAmounts()
+        private void SetCubeSize()
         {
-            MyCubeSize cubeSize;
-            switch(settings.ProjectorSize)
+            switch (settings.ProjectorSize)
             {
                 case "Large":
                     cubeSize = MyCubeSize.Large;
@@ -62,16 +67,53 @@ namespace IngameScript
                     break;
                 case "Auto":
                 default:
-                    cubeSize = projector.CubeGrid.GridSizeEnum;
+                    cubeSize = DetectCubeSize();
                     break;
             }
+        }
 
-            Dictionary<Component.ComponentType, int> neededComponents = new Dictionary<Component.ComponentType, int>();
+        private void SetupCaches()
+        {
+            availableItemCache = new CachingProvider.Cache<Dictionary<Component.ComponentType, int>>(componentSummary.IntAmounts, TimeSpan.FromMinutes(1));
+            productionQueueCache = new CachingProvider.Cache<Dictionary<Component.ComponentType, int>>(productionSummary.ProductionQueueSummary, TimeSpan.FromMinutes(1));
+        }
+
+        private void InvalidateCaches()
+        {
+            availableItemCache.Invalidate();
+            productionQueueCache.Invalidate();
+        }
+
+        private MyCubeSize DetectCubeSize()
+        {
+            int largeCount = 0;
+            int smallCount = 0;
+            foreach (string id in rawData.Keys)
+            {
+                BlockType largeBlockType = BlockIndex.GetBlockType(id, MyCubeSize.Large);
+                BlockType smallBlockType = BlockIndex.GetBlockType(id, MyCubeSize.Small);
+                if (largeBlockType == null && smallBlockType != null)
+                {
+                    ++smallCount;
+                }
+                if (largeBlockType != null && smallBlockType == null)
+                {
+                    ++largeCount;
+                }
+            }
+            Echo(largeCount.ToString() + " " + smallCount.ToString());
+            return largeCount > smallCount ? MyCubeSize.Large : MyCubeSize.Small;
+        }
+
+        private void CalculateNeededAmounts()
+        {
+            neededComponents.Clear();
             foreach (string id in rawData.Keys)
             {
                 BlockType blockType = BlockIndex.GetBlockType(id, cubeSize);
                 if (blockType == null)
                 {
+                    Echo(cubeSize.ToString());
                     Echo(id);
                 }
                 else
@@ -82,7 +124,6 @@ namespace IngameScript
                     }
                 }
             }
-            return neededComponents;
         }
 
         private Display BuildAnalyzerDisplay()
@@ -92,9 +133,10 @@ namespace IngameScript
                             .InSameConstructAs(Me)
                             .WithCustomData(settings.DisplayTag)
                             .Get(),
-                        CachingProvider.Of(() => neededComponents, TimeSpan.FromSeconds(10)),
-                        CachingProvider.Of(componentSummary.IntAmounts, TimeSpan.FromSeconds(10)),
-                        CachingProvider.Of(productionSummary.ProductionQueueSummary, TimeSpan.FromSeconds(10)))
+                        () => neededComponents,
+                        availableItemCache.Get,
+                        productionQueueCache.Get,
+                        settings)
                     .Build();
         }
 
@@ -108,14 +150,19 @@ namespace IngameScript
             if (argument == "CLEAR")
             {
                 Clear();
+                productionQueueCache.Invalidate();
             }
             if (argument == "ENQUEUE")
             {
                 Enqueue();
+                productionQueueCache.Invalidate();
             }
             if (argument == "RECALCULATE")
             {
-                neededComponents = CalculateNeededAmounts();
+                rawData = ProjectorExtractor.ExtractFromProjector(projector.RemainingBlocksPerType);
+                SetCubeSize();
+                CalculateNeededAmounts();
+                InvalidateCaches();
             }
             Display.Render();
         }

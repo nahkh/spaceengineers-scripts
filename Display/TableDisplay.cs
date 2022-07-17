@@ -28,29 +28,23 @@ namespace IngameScript
             List<COL> columns;
             List<ROW> rows;
             Func<ROW, COL, string> dataSource;
-            Dictionary<COL, Alignment> columnAlignment;
+            Dictionary<COL, StringUtil.Alignment> columnAlignment;
             Dictionary<ROW, Func<bool>> rowVisibility;
             private readonly IMyTextSurface textSurface;
             private readonly int width;
             private readonly int height;
+            private readonly string dividerString;
             private int rowIdWidth;
             private int dynamicColumnWidth;
             private bool showRowLabel;
-
             private string label = null;
-
-            public enum Alignment
-            {
-                LEFT,
-                RIGHT,
-                MIDDLE,
-            }
+            private readonly List<Func<string>> additionalLines;
 
             public TableDisplay(IMyTextSurface textSurface, int width, int height)
             {
                 columnWidth = new Dictionary<COL, int>();
                 columns = new List<COL>();
-                columnAlignment = new Dictionary<COL, Alignment>();
+                columnAlignment = new Dictionary<COL, StringUtil.Alignment>();
                 rowVisibility = new Dictionary<ROW, Func<bool>>();
                 rows = new List<ROW>();
                 this.textSurface = textSurface;
@@ -59,6 +53,8 @@ namespace IngameScript
                 rowIdWidth = 0;
                 dynamicColumnWidth = 0;
                 showRowLabel = true;
+                dividerString = new string('-', width);
+                additionalLines = new List<Func<string>>();
             }
 
 
@@ -69,7 +65,7 @@ namespace IngameScript
             }
 
 
-            public TableDisplay<ROW, COL> Column(COL col, int columnWidth = -1, Alignment alignment = Alignment.LEFT)
+            public TableDisplay<ROW, COL> Column(COL col, int columnWidth = -1, StringUtil.Alignment alignment = StringUtil.Alignment.LEFT)
             {
                 columns.Add(col);
                 if (columnWidth > 0) {
@@ -95,6 +91,12 @@ namespace IngameScript
                 return this;
             }
 
+            public TableDisplay<ROW, COL> AdditionalRow(Func<string> provider)
+            {
+                additionalLines.Add(provider);
+                return this;
+            }
+
             public TableDisplay<ROW, COL> Rows(IEnumerable<ROW> rows)
             {
                 foreach (ROW row in rows)
@@ -111,7 +113,7 @@ namespace IngameScript
             }
             public TableDisplay<ROW, COL> WithLabel(string label)
             {
-                this.label = Pad(label, Alignment.MIDDLE, width);
+                this.label = StringUtil.Pad(label, StringUtil.Alignment.MIDDLE, width);
                 return this;
             }
 
@@ -129,50 +131,37 @@ namespace IngameScript
                 }
                 foreach(COL col in columns)
                 {
-                    columnHeaderRow += Pad(col.ToString(), columnAlignment[col], columnWidth.GetValueOrDefault(col, dynamicColumnWidth));
+                    columnHeaderRow += StringUtil.Pad(col.ToString(), columnAlignment[col], columnWidth.GetValueOrDefault(col, dynamicColumnWidth));
                 }
                 output.Add(columnHeaderRow);
                 output.Add(new string('-', width));
                 foreach(ROW row in rows)
                 {
-                    if (rowVisibility[row].Invoke())
-                    {
-                        string normalRow = "";
-                        if (showRowLabel)
+                   
+                        if (rowVisibility[row].Invoke())
                         {
-                            normalRow += Pad(row.ToString(), Alignment.LEFT, rowIdWidth);
+                            string normalRow = "";
+                            if (showRowLabel)
+                            {
+                                normalRow += StringUtil.Pad(row.ToString(), StringUtil.Alignment.LEFT, rowIdWidth);
+                            }
+                            foreach (COL col in columns)
+                            {
+                                normalRow += StringUtil.Pad(dataSource.Invoke(row, col), columnAlignment[col], columnWidth.GetValueOrDefault(col, dynamicColumnWidth));
+                            }
+                            output.Add(normalRow);
                         }
-                        foreach (COL col in columns)
-                        {
-                            normalRow += Pad(dataSource.Invoke(row, col), columnAlignment[col], columnWidth.GetValueOrDefault(col, dynamicColumnWidth));
-                        }
-                        output.Add(normalRow);
-                    }
+                }
+                if (additionalLines.Count > 0)
+                {
+                    output.Add(dividerString);
+                }
+                foreach (Func<string> additionalRow in additionalLines)
+                {
+                    output.Add(additionalRow.Invoke());
                 }
 
                 return output;
-            }
-
-            static private string Pad(string input, Alignment alignment, int desiredWidth)
-            {
-                if (input.Length > desiredWidth)
-                {
-                    return input.Substring(0, desiredWidth);
-                }
-                int spareWidth = desiredWidth - input.Length;
-                switch(alignment)
-                {
-                    case Alignment.LEFT:
-                        return input + new string(' ', spareWidth);
-                    case Alignment.RIGHT:
-                        return new string(' ', spareWidth) + input;
-                    case Alignment.MIDDLE:
-                        int left = spareWidth / 2;
-                        int right = spareWidth - left;
-                        return new string(' ', left) + input + new string(' ', right);
-                    default:
-                        throw new ArgumentException("Unknown alignment: " + alignment);
-                }
             }
 
             public Display Build()

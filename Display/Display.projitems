@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)LogDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ScriptDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StatusDisplay.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TableDisplay.cs" />
   </ItemGroup>
 </Project>

@@ -23,13 +23,13 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
         private readonly ScriptDisplay scriptDisplay;
-        private readonly Navigator navigator;
+        private readonly NavigatorDisplay navigator;
 
         public Program()
         {
             scriptDisplay = new ScriptDisplay(Me, Runtime, name: "ShipNavigator", version: "0.0.1");
             IMyCockpit cockpit = new BlockFinder<IMyCockpit>(this).InSameConstructAs(Me).Get();
-            navigator = new Navigator(cockpit.GetSurface(1), cockpit, maxDeviation: 90);
+            navigator = new NavigatorDisplay(cockpit.GetSurface(1), new Navigator(cockpit), maxDeviation: 90);
             Runtime.UpdateFrequency = UpdateFrequency.Update1;
         }
 

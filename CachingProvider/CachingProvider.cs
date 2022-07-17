@@ -47,8 +47,12 @@ namespace IngameScript
                     }
                     return cachedValue;
                 }
+
+                public void Invalidate()
+                {
+                    lastRefresh = DateTime.MinValue;
+                }
             }
-          
 
             public static Func<T> Of<T>(Func<T> provider) {
                 return Of(provider, TimeSpan.FromMinutes(1));

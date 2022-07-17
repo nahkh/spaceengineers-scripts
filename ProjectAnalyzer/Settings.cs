@@ -43,8 +43,24 @@ namespace IngameScript
                     _ini.SetComment("ProjectAnalyzer", "DisplayTag", "Which Wide LCD display to show results on.");
                     _ini.Set("ProjectAnalyzer", "CubeSize", "Auto");
                     _ini.SetComment("ProjectAnalyzer", "CubeSize", "Which grid size. Acceptable values are: Small, Large, Auto");
-                    programmableBlock.CustomData = _ini.ToString();
+                  
                 }
+                if (!_ini.ContainsSection("Prices"))
+                {
+                    _ini.AddSection("Prices");
+                    foreach (Component.ComponentType item in Component.Types())
+                    {
+                        _ini.Set("Prices", item.ToString(), 1f);
+                    }
+
+                    _ini.Set("Prices", "MarkupPercent", 5f);
+                    _ini.SetComment("Prices", "MarkupPercent", "How much of a price markup");
+                    _ini.Set("Prices", "MinimumMarkup", 10000);
+                    _ini.SetComment("Prices", "MinimumMarkup", "Minimum markup");
+                    _ini.Set("Prices", "ShowPrices", true);
+                    _ini.SetComment("Prices", "ShowPrices", "Whether to show prices or not");
+                }
+                programmableBlock.CustomData = _ini.ToString();
             }
 
             public string AssemblerTag
@@ -76,6 +92,35 @@ namespace IngameScript
                 get
                 {
                     return _ini.Get("ProjectAnalyzer", "CubeSize").ToString("Large");
+                }
+            }
+
+            public decimal PriceFor(Component.ComponentType type)
+            {
+                return _ini.Get("Prices", type.ToString()).ToDecimal();
+            }
+
+            public decimal Markup
+            {
+                get
+                {
+                    return (_ini.Get("Prices", "MarkupPercent").ToDecimal() / 100);
+                }
+            }
+
+            public decimal MinimalMarkup
+            {
+                get
+                {
+                    return _ini.Get("Prices", "MinimumMarkup").ToDecimal();
+                }
+            }
+
+            public bool ShowPrices
+            {
+                get
+                {
+                    return _ini.Get("Prices", "ShowPrices").ToBoolean();
                 }
             }
         }
