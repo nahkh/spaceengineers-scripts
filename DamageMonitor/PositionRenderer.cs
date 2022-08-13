@@ -37,7 +37,6 @@ namespace IngameScript
             private readonly IMyCubeGrid cubeGrid;
             private readonly Action<string> logger;
             private readonly List<Vector3I> positions3;
-            private readonly int margin;
             private readonly Renderer renderer;
             private readonly int xOffset;
             private readonly int yOffset;
@@ -50,7 +49,6 @@ namespace IngameScript
                 this.logger = logger;
                 this.positions3 = positions3;
                 positions = Flatten(positions3, settings.XAxis, settings.YAxis);
-                this.margin = margin;
                 int minX = int.MaxValue;
                 int minY = int.MaxValue;
                 int maxX = int.MinValue;
@@ -135,7 +133,7 @@ namespace IngameScript
                     return BlockState.DESTROYED;
                 }
                 IMySlimBlock slimBlock = cubeGrid.GetCubeBlock(position);
-                if (slimBlock != null && slimBlock.CurrentDamage > 0)
+                if (slimBlock != null && (slimBlock.CurrentDamage > 0 || slimBlock.HasDeformation))
                 {
                     return BlockState.DAMAGED;
                 } else

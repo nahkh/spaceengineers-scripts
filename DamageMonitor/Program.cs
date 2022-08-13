@@ -27,13 +27,20 @@ namespace IngameScript
         public Program()
         {
             settings = new Settings(Me);
-            IMyCockpit cockpit = new BlockFinder<IMyCockpit>(this).InSameConstructAs(Me).Get();
+            IMyCockpit cockpit = new BlockFinder<IMyCockpit>(this).WithCustomData(settings.CockpitTag).InSameConstructAs(Me).Get();
             List<Vector3I> positions = GridScanner.GetBlocks(cockpit);
             ScriptDisplay scriptDisplay = new ScriptDisplay(Me, Runtime);
-            LogDisplay log = new LogDisplay(cockpit.GetSurface(2), 8, 17);
-            log.Log("Starting");
-            log.Log("BC " + positions.Count);
-            positionRenderer = new PositionRenderer(cockpit.CubeGrid, settings, log.Log, cockpit.GetSurface(0), positions, 10);
+            int logDisplayNumber = settings.LogSurface;
+            Action<string> logger = str => { };
+            if (logDisplayNumber >= 0)
+            {
+                LogDisplay log = new LogDisplay(cockpit.GetSurface(logDisplayNumber), 8, 17);
+                logger = log.Log;
+            }
+            
+            logger.Invoke("Starting");
+            logger.Invoke("BC " + positions.Count);
+            positionRenderer = new PositionRenderer(cockpit.CubeGrid, settings, logger, cockpit.GetSurface(settings.MainSurface), positions, 10);
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
         }
 
