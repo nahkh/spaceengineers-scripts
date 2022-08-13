@@ -80,7 +80,7 @@ namespace IngameScript
                 int width = maxX - minX + 1 + margin * 2;
                 int height = maxY - minY + 1 + margin * 2;
                 logger.Invoke("Width " + width + " height " + height);
-                renderer = new Renderer(surface, width, height, new Color(0xFF975800));
+                renderer = new Renderer(surface, width, height, Color.Black);
                 xOffset = -minX + margin;
                 yOffset = -minY + margin;
                 dirty = true;
@@ -169,11 +169,11 @@ namespace IngameScript
                 switch(state)
                 {
                     case BlockState.OK:
-                        return Color.White;
+                        return Color.DarkBlue;
                     case BlockState.DAMAGED:
-                        return Color.Red;
+                        return Color.OrangeRed;
                     case BlockState.DESTROYED:
-                        return Color.Black;
+                        return Color.DarkRed;
                     default:
                         return Color.Yellow;
                 }

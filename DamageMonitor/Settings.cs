@@ -34,11 +34,13 @@ namespace IngameScript
                 if (String.IsNullOrEmpty(programmableBlock.CustomData))
                 {
                     _ini.Set("Cockpit", "Tag", "");
-                    _ini.SetComment("Cockpit", "Tag", "The string which should appear in the cockpit's CustomData");
+                    _ini.SetComment("Cockpit", "Tag", "The string which should appear in the cockpit's CustomData.");
                     _ini.Set("Cockpit", "MainSurface", "0");
                     _ini.SetComment("Cockpit", "MainSurface", "The number of the surface where the damage should be displayed");
                     _ini.Set("Cockpit", "LogSurface", "2");
                     _ini.SetComment("Cockpit", "LogSurface", "The number of the surface where the log should be displayed");
+                    _ini.Set("IndependentDisplay", "Tag", "");
+                    _ini.SetComment("IndependentDisplay", "Tag", "The string which should appear in an independent surfaces CustomData. If this value is set, the script will ignore any cockpits and only update the independent display.");
                     _ini.Set("Axis", "X", "X");
                     _ini.SetComment("Axis", "X", "Which direction is the rendered X-axis on the display. Possible values are X, Y, Z, -X, -Y, -Z");
                     _ini.Set("Axis", "Y", "Z");
@@ -97,6 +99,14 @@ namespace IngameScript
                 get
                 {
                     return _ini.Get("Cockpit", "MainSurface").ToInt32();
+                }
+            }
+
+            public string IndepentDisplay
+            {
+                get
+                {
+                    return _ini.Get("IndependentDisplay", "Tag").ToString();
                 }
             }
 

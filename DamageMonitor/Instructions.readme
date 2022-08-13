@@ -1,6 +1,8 @@
 ﻿R e a d m e
 -----------
 
+Version 2
+
 This script tracks damage to your grid and renders it graphically on a cockpit display.
 The script is configured by the contents of the programmable block's CustomData field.
 
@@ -14,6 +16,8 @@ Setup:
 
 Known limitations:
 1. The script only tracks the grid the programmable block is attached to.
+2. The appearance of small ships is very blocky.
+3. Modifications to ships don't show up until you recompile the script.
 
 Enjoy,
 Nahkh
