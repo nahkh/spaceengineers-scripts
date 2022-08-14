@@ -42,6 +42,7 @@ namespace IngameScript
                     .WithRow("Update frequency", () => runtimeInfo.UpdateFrequency.ToString())
                     .WithRow("Call chain depth", () => runtimeInfo.CurrentCallChainDepth.ToString())
                     .WithRow("Instruction count", () => runtimeInfo.CurrentInstructionCount.ToString())
+                    .WithRow("Max instructions", () => runtimeInfo.MaxInstructionCount.ToString())
                     .WithHorizontalLine()
                     .WithLog(buffer)
                     .WithTime()

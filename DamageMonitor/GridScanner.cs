@@ -24,31 +24,64 @@ namespace IngameScript
     {
         public class GridScanner
         {
-            public static List<Vector3I> GetBlocks(IMyCubeBlock startingPoint)
+            private readonly Program p;
+            private readonly List<Vector3I> foundBlocks;
+            private readonly HashSet<Vector3I> visited;
+            private readonly List<Vector3I> frontier;
+            private readonly Coroutine coroutine;
+            private readonly IEnumerator<Vector3I> enumerator;
+
+            public GridScanner(Program p)
             {
-                List<Vector3I> foundBlocks = new List<Vector3I>();
-                IMyCubeGrid grid = startingPoint.CubeGrid;
-                HashSet<Vector3I> visited = new HashSet<Vector3I>();
-                List<Vector3I> frontier = new List<Vector3I>();
-                frontier.Add(startingPoint.Position);
+                if (p == null)
+                {
+                    throw new ArgumentNullException(nameof(p));
+                }
+
+                this.p = p;
+                foundBlocks = new List<Vector3I>();
+                visited = new HashSet<Vector3I>();
+                frontier = new List<Vector3I>();
+                frontier.Add(p.Me.Position);
+                coroutine = new Coroutine(p);
+                enumerator = EnumerateFrontier().GetEnumerator();
+            }
+
+            public IEnumerable<Vector3I> EnumerateFrontier()
+            {
                 while (frontier.Count > 0)
                 {
                     Vector3I node = frontier.Pop();
-                    if (visited.Contains(node))
+                    yield return node;
+                }
+            }
+
+            public Boolean ProcessPosition(Vector3I node)
+            {
+                if (visited.Contains(node))
+                {
+                    return false;
+                }
+                foundBlocks.Add(node);
+                visited.Add(node);
+                foreach (Vector3I neighbor in Neighbors(node))
+                {
+                    if (p.Me.CubeGrid.CubeExists(neighbor))
                     {
-                        continue;
-                    }
-                    foundBlocks.Add(node);
-                    visited.Add(node);
-                    foreach(Vector3I neighbor in Neighbors(node))
-                    {
-                        if (grid.CubeExists(neighbor))
-                        {
-                            frontier.Add(neighbor);
-                        }
+                        frontier.Add(neighbor);
                     }
                 }
+                return true;
+            }
 
+            public bool Process()
+            {
+                var result = coroutine.Execute(enumerator, ProcessPosition);
+                return result.finished;
+            }
+
+            public List<Vector3I> GetPositions()
+            {
                 return foundBlocks;
             }
 

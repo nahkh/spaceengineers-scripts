@@ -41,6 +41,10 @@ namespace IngameScript
             private readonly int xOffset;
             private readonly int yOffset;
             private bool dirty;
+            private int damagedBlockCount;
+            private int destroyedBlockCount;
+            private int totalBlockCount;
+
             public PositionRenderer(IMyCubeGrid cubeGrid, Settings settings, Action<string> logger, IMyTextSurface surface, List<Vector3I> positions3, int margin)
             {
                 blockStates = new Dictionary<Vector3I, BlockState>();
@@ -84,6 +88,7 @@ namespace IngameScript
                 xOffset = -minX + margin;
                 yOffset = -minY + margin;
                 dirty = true;
+                totalBlockCount = positions3.Count;
             }
 
             private static Dictionary<Vector3I, Vector2I> Flatten(List<Vector3I> threeDimPositions, Func<Vector3I, int> x, Func<Vector3I, int> y)
@@ -102,6 +107,8 @@ namespace IngameScript
             private void CheckChangesInDamage()
             {
                 renderedState.Clear();
+                damagedBlockCount = 0;
+                destroyedBlockCount = 0;
                 foreach(Vector3I position in positions3)
                 {
                     BlockState blockState = DetermineCurrentBlockState(position);
@@ -110,6 +117,15 @@ namespace IngameScript
                         dirty = true;
                     }
                     blockStates[position] = blockState;
+                    switch(blockState)
+                    {
+                        case BlockState.DAMAGED:
+                            ++damagedBlockCount;
+                            break;
+                        case BlockState.DESTROYED:
+                            ++destroyedBlockCount;
+                            break;
+                    }
                     AssignBlockStateForRendering(positions[position], blockState);
                 }
             }
@@ -148,6 +164,7 @@ namespace IngameScript
                 if (dirty)
                 {
                     logger.Invoke("Detected changes");
+                    logger.Invoke("Dam " + damagedBlockCount + ", des " + destroyedBlockCount);
                     Render();
                     dirty = false;
                 }

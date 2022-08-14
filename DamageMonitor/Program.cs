@@ -23,7 +23,11 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
         private Settings settings;
+        private GridScanner gridScanner;
         private PositionRenderer positionRenderer;
+        private IMyCockpit cockpit;
+        private Action<string> logger;
+        private List<Vector3I> positions;
         public Program()
         {
             settings = new Settings(Me);
@@ -31,30 +35,38 @@ namespace IngameScript
             {
                 Me.CustomName = "Program: Damage Monitor";
             }
-            List<Vector3I> positions = GridScanner.GetBlocks(Me);
-            ScriptDisplay scriptDisplay = new ScriptDisplay(Me, Runtime);
-            int logDisplayNumber = settings.LogSurface;
-            
-            IMyCockpit cockpit = new BlockFinder<IMyCockpit>(this).WithCustomData(settings.CockpitTag).InSameConstructAs(Me).TryGet();
-            Action<string> logger = getLogger(scriptDisplay, settings, cockpit);
-            logger.Invoke("Starting");
-            logger.Invoke("BC " + positions.Count);
+            ScriptDisplay scriptDisplay = new ScriptDisplay(Me, Runtime, "Damage monitor", "v3");
+            Display.Render();
+
+
+            cockpit = new BlockFinder<IMyCockpit>(this).WithCustomData(settings.CockpitTag).InSameConstructAs(Me).TryGet();
+            logger = getLogger(scriptDisplay, settings, cockpit);
+            logger.Invoke("Scanning blocks");
+            Runtime.UpdateFrequency = UpdateFrequency.Update1;
+            gridScanner = new GridScanner(this);
+        }
+
+        private PositionRenderer CreateRenderer(List<Vector3I> positions)
+        {
             IMyTextSurface surface = getSurface(settings, cockpit);
             if (surface != null)
             {
-                positionRenderer = new PositionRenderer(Me.CubeGrid, settings, logger, surface, positions, 10);
                 Runtime.UpdateFrequency = UpdateFrequency.Update100;
-            } else
+                return new PositionRenderer(Me.CubeGrid, settings, logger, surface, positions, 10);
+            }
+            else
             {
                 logger.Invoke("Could not initialize a rendering surface, exiting early. Please check the settings.");
                 Echo("Could not initialize a rendering surface, exiting early. Please check the settings.");
+                Runtime.UpdateFrequency = UpdateFrequency.None;
+                Display.Render();
+                return null;
             }
-            
         }
 
         private Action<string> getLogger(ScriptDisplay scriptDisplay, Settings settings, IMyCockpit cockpit)
         {
-            if (settings.LogSurface >= 0 && cockpit != null)
+            if (String.IsNullOrEmpty(settings.IndepentDisplay) && settings.LogSurface >= 0 && cockpit != null)
             {
                 LogDisplay log = new LogDisplay(cockpit.GetSurface(settings.LogSurface), 8, 17);
                 return log.Log;
@@ -77,14 +89,29 @@ namespace IngameScript
             }
         }
 
-        public void Save()
-        {
-            
-        }
-
         public void Main(string argument, UpdateType updateSource)
         {
-            positionRenderer.Update();
+            if (positionRenderer == null)
+            {
+                if (gridScanner == null)
+                {
+                    logger.Invoke("Creating renderer");
+                    positionRenderer = CreateRenderer(positions);
+                } else
+                {
+                    if (gridScanner.Process())
+                    {
+                        logger.Invoke("Scan complete");
+                        positions = gridScanner.GetPositions();
+                        logger.Invoke("" + positions.Count + " blocks in grid");
+                        gridScanner = null;
+                    }
+                }
+            } else
+            {
+                positionRenderer.Update();
+            }
+            
             Display.Render();
         }
     }

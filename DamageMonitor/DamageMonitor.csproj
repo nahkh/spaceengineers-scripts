@@ -56,6 +56,7 @@
   <Import Project="..\BlockFinder\BlockFinder.projitems" Label="Shared" />
   <Import Project="..\Display\Display.projitems" Label="Shared" />
   <Import Project="..\Renderer\Renderer.projitems" Label="Shared" />
+  <Import Project="..\Coroutine\Coroutine.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <Copy SourceFiles="MDK\MDK.options.props" DestinationFolder="$(TargetDir)\MDK" />

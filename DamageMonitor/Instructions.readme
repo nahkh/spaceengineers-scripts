@@ -1,7 +1,7 @@
 ﻿R e a d m e
 -----------
 
-Version 2
+Version 3
 
 This script tracks damage to your grid and renders it graphically on a cockpit display.
 The script is configured by the contents of the programmable block's CustomData field.
